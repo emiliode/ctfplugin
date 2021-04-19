@@ -11,7 +11,7 @@ public class CommandHello implements CommandExecutor {
                 if(sender instanceof Player){
                     //player
                     Player player = (Player) sender;
-                    if (player.hasPermission("hello.use")) {
+                    if (player.hasPermission("none")) {
                         player.sendMessage(ChatColor.DARK_BLUE + "" + ChatColor.BOLD + "Hey welcome to the server");
                     }else{
                         player.sendMessage("No permission");

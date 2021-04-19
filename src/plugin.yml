@@ -5,4 +5,11 @@ main: de.emilio.ctf.Main
 api-version: 1.8
 
 commands:
-  Hello:
+  hello:
+    description: Greets you
+    usage: /<command>
+    permission: none
+  setteams:
+    description: Set the number of teams
+    usage: /<command> <number of teams>
+    permission: ctf.admin

@@ -10,13 +10,17 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scoreboard.*;
 
 public class MyListener implements Listener {
+    private Game game;
+    public MyListener(Game game){
+        this.game = game;
+    }
     @EventHandler
     public void onJoin(PlayerJoinEvent event ){
         event.getPlayer().sendMessage("Hello to the server");
         createBoard(event.getPlayer());
     }
     public static void createBoard(Player player){
-        System.out.println("Creating Board");
+       // System.out.println("Creating Board");
         ScoreboardManager manager = Bukkit.getScoreboardManager();
         Scoreboard board = manager.getNewScoreboard();
         Objective obj = board.registerNewObjective("CTF-scoreboard","dummy");
@@ -33,7 +37,7 @@ public class MyListener implements Listener {
                 player.getStatistic(Statistic.MOB_KILLS));
         score4.setScore(0);
         player.setScoreboard(board);
-        System.out.println(player.getScoreboard());
+        //System.out.println(player.getScoreboard());
 
     }
 }
