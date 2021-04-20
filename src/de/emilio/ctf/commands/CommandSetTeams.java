@@ -2,16 +2,20 @@ package de.emilio.ctf.commands;
 
 import de.emilio.ctf.Game;
 import de.emilio.ctf.Team;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
 
 public class CommandSetTeams implements CommandExecutor {
     Game game;
     final private ChatColor[] colors = {ChatColor.BLUE, ChatColor.RED , ChatColor.LIGHT_PURPLE ,ChatColor.WHITE};
-    final private int[] colorcodes = {11,14,6,0};
+    final private short[] colorcodes = {11,14,6,0};
+    final private String[] names = {"Blau","Rot","Pink","Weiß"};
     public  CommandSetTeams(Game game){
         this.game = game;
     }
@@ -32,12 +36,19 @@ public class CommandSetTeams implements CommandExecutor {
                     return false;
                 }
                 Team[] teams = new Team[numteams];
+                this.game.sb = Bukkit.getScoreboardManager().getNewScoreboard();
                 for (int i=0; i< numteams; i++){
-                    teams[i] = new Team(colors[i], colorcodes[i],0,i);
+                    teams[i] = new Team(colors[i], colorcodes[i],0,i,names[i] );
+                }
+                for (Team team :
+                        teams) {
+                    sender.sendMessage(team.getName());
+
                 }
                 this.game.teams = teams;
-                this.game.printTeams();
-                this.game.createInv();
+
+
+
             }
         }else {
             sender.sendMessage("You don't have enough permissions");

@@ -7,19 +7,26 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Game {
+    public Scoreboard sb;
     public Inventory inv = null;
     public Team[] teams;
+    public Map<String, Long> Timeoutmap = new HashMap<String, Long>();
     public Game(){
+
         System.out.println("Game created");
+
     }
     public void updateScores(int[] scores){
         for (Player player:Bukkit.getOnlinePlayers()){
-            MyListener.createBoard(player);
+           // MyListener.createBoard(player);
         }
 
     }
@@ -29,12 +36,13 @@ public class Game {
             Bukkit.broadcastMessage(team.getColor()+String.valueOf(team.getId()));
         }
     }
-    public void createInv(){
+/*    public void createInv(){
         this.inv = Bukkit.createInventory(null,9 , ChatColor.GOLD+""+ChatColor.BOLD+"Change Team");
         List<String> lore = new ArrayList<String >();
         lore.add("Click to join team");
+        lore.add("Some other lore");
         for (int i = 0; i < this.teams.length; i++) {
-            ItemStack item  = new ItemStack(Material.WOOL,1,(short) this.teams[i].getColorcode());
+            ItemStack item  = new ItemStack(Material.WOOL,1,this.teams[i].getColordata());
             ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(this.teams[i].getColor()+""+ this.teams[i].getId());
             meta.setLore(lore);
@@ -47,8 +55,9 @@ public class Game {
         lore.remove(0);
         lore.add("Click to cancel");
         meta.setLore(lore);
+        item.setItemMeta(meta);
         this.inv.setItem(8,item);
-    }
+    }*/
     public void addPlayer(Player player, int teamid){
         for (Team team:teams
              ) {
