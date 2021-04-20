@@ -1,32 +1,90 @@
 package de.emilio.ctf;
 
+import org.bukkit.*;
+import org.bukkit.block.Banner;
+import org.bukkit.enchantments.Enchantment;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerGameModeChangeEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.scoreboard.*;
 import org.inventivetalent.bossbar.BossBar;
 import org.inventivetalent.bossbar.BossBarAPI;
 
 public class MyListener implements Listener {
     private Game game;
-    public MyListener(Game game){
+    private JavaPlugin plugin;
+    public MyListener(Game game, JavaPlugin plugin){
         this.game = game;
+        this.plugin=plugin;
     }
     @EventHandler
     public void onJoin(PlayerJoinEvent event ){
-        event.getPlayer().sendMessage("Hello to the server");
-        //createBoard(event.getPlayer());
+        event.getPlayer().sendMessage("Hello to the server");}
+    @EventHandler
+    public void onItemClick(PlayerInteractEvent ev) {
+        try {
+            if (ev.getPlayer().getItemInHand().getType() != Material.AIR && ev.getClickedBlock().getType() != null) {
+                ItemStack item = ev.getPlayer().getItemInHand();
+                ItemMeta meta = item.getItemMeta();
+                meta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+                item.setItemMeta(meta);
+
+                if (item.getEnchantmentLevel(Enchantment.DAMAGE_ARTHROPODS) == 10) {
+                    //ItemStack stack = new ItemStack(Material.STAINED_GLASS, 1, item.getDurability());
+                    ev.getClickedBlock().setType(Material.STAINED_GLASS);
+                    ev.getClickedBlock().setData((byte) item.getDurability());
+                    ev.getPlayer().getInventory().remove(item);
+                    Location loc = ev.getClickedBlock().getLocation();
+                    long timeInTicks = 2;
+                    int[] intArray = {1, 1, -1, -1, -1, -1, +1, +1, 0};
+                    int[] chArray = {'X', 'Y', 'X', 'X', 'Y', 'Y', 'X', 'X', 'X'};
+                    final int[] yolo = {0};
+
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            if (chArray[yolo[0]] == 'X') {
+                                loc.setX(loc.getX() + intArray[yolo[0]]);
+                            } else {
+                                loc.setZ(loc.getZ() + intArray[yolo[0]]);
+                            }
+                            loc.getBlock().setType(Material.STAINED_CLAY);
+                            loc.getBlock().setData((byte) item.getDurability());
+
+                            if (yolo[0] == 8) {
+                                loc.setX(loc.getX() - 1);
+                                loc.setZ((loc.getZ() + 1));
+                                loc.setY(loc.getY() + 1);
+                                loc.getBlock().setType(Material.STANDING_BANNER);
+                                Banner banner = (Banner) loc.getBlock().getState();
+                                banner.setBaseColor(DyeColor.getByDyeData((byte) (15 - item.getDurability())));
+                                banner.update();
+                                this.cancel();
+                                ev.getPlayer().getEyeLocation().getDirection();
+
+                            }
+                            yolo[0]++;
+
+                        }
+                    }.runTaskTimer(plugin, timeInTicks, timeInTicks);
+
+
+                }
+            }
+        } catch (Exception e) {
+        }
     }
     @EventHandler
     public void onClick(InventoryClickEvent event){
@@ -86,6 +144,4 @@ public class MyListener implements Listener {
            // event.getPlayer().sendMessage("You are not allowed to move");
         }
     }
-
-
 }

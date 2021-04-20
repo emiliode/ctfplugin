@@ -18,7 +18,7 @@ public class Main extends JavaPlugin  {
     public void onEnable(){
         Game game = new Game();
         System.out.println(game);
-        this.getServer().getPluginManager().registerEvents(new MyListener(game),this);
+        this.getServer().getPluginManager().registerEvents(new MyListener(game, this),this);
         this.getCommand("hello").setExecutor(new CommandHello());
         this.getCommand("setteams").setExecutor(new CommandSetTeams(game));
         this.getCommand("join").setExecutor(new CommandjoinTeam(game));

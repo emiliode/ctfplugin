@@ -59,7 +59,7 @@ public class Team {
 
     public ArrayList<String> getPlayers() {
         return players;
-    }
+    }//171 103 336
 
     public boolean addPlayer(Player player) {
         if(this.players.contains(player.getName())){
@@ -79,9 +79,9 @@ public class Team {
     }
 
     public ItemStack getIcon(){
-        ItemStack it = new ItemStack(Material.STAINED_CLAY,1,colorData);
+        ItemStack it = new ItemStack(Material.WOOL,1,colorData);
         ItemMeta m = it.getItemMeta();
-        m.setDisplayName(name);
+        m.setDisplayName(this.color+name);
         m.setLore(players);
         it.setItemMeta(m);
         return it;

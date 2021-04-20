@@ -29,6 +29,14 @@ public class CommandjoinTeam implements CommandExecutor {
         }
         Player player = (Player) sender;
         // open GUI
+        /*if(args.length>0){
+            int teamID=Integer.parseInt(args[0]);
+            game.addPlayer(player,teamID );
+            return true;
+        }else if(!(game.inv == null)) {
+            player.openInventory(game.inv);
+            return true;
+        }*/
         openTeamInv(player);
         player.sendMessage("You must create some teams first");
         return true;
