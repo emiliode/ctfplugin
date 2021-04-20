@@ -3,6 +3,7 @@
     <output-path>$USER_HOME$/spigotserver/plugins</output-path>
     <root id="archive" name="ctf.jar">
       <element id="module-output" name="ctf_Plugin" />
+      <element id="library" level="project" name="BossBarAPI_v2.4.1" />
     </root>
   </artifact>
 </component>

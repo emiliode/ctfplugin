@@ -1,5 +1,6 @@
 package de.emilio.ctf;
 
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -11,8 +12,11 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scoreboard.*;
+import org.inventivetalent.bossbar.BossBar;
+import org.inventivetalent.bossbar.BossBarAPI;
 
 public class MyListener implements Listener {
     private Game game;
@@ -62,10 +66,26 @@ public class MyListener implements Listener {
     }
     @EventHandler
     public void onRespwan(PlayerRespawnEvent event){
-        game.Timeoutmap.put(event.getPlayer().getName(),System.currentTimeMillis()+ (20*1000));
-        event.getPlayer().setGameMode(GameMode.SPECTATOR);
+        Player player = event.getPlayer();
+        game.Timeoutmap.put(player.getName(),( System.currentTimeMillis()/1000+ 20));
+        player.setGameMode(GameMode.ADVENTURE);
+        BossBar bossBar = BossBarAPI.addBar(player, // The receiver of the BossBar
+                new TextComponent("Reentering  !"), // Displayed message
+                BossBarAPI.Color.BLUE, // Color of the bar
+                BossBarAPI.Style.NOTCHED_20, // Bar style
+                1.0f); // Timeout-interval
+        //BossBar bossBar1 = BossBarAPI.addBar(player, new TextComponent("Respawn"),BossBarAPI.Color.BLUE, BossBarAPI.Style.NOTCHED_20,1.0f,20,2);
+        //bossBar.setProgress(-1.0f);
+        System.out.println("BITTE SEI 1 DU HUSO:"+bossBar.getProgress());
+        game.Barmap.put(player.getName(),bossBar);
     }
-
+    @EventHandler
+    public void onMove(PlayerMoveEvent event){
+        if(game.Timeoutmap.containsKey(event.getPlayer().getName())){
+            event.setCancelled(true);
+           // event.getPlayer().sendMessage("You are not allowed to move");
+        }
+    }
 
 
 }

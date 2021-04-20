@@ -8,6 +8,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scoreboard.Scoreboard;
+import org.inventivetalent.bossbar.BossBar;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +19,8 @@ public class Game {
     public Scoreboard sb;
     public Inventory inv = null;
     public Team[] teams;
-    public Map<String, Long> Timeoutmap = new HashMap<String, Long>();
+    public HashMap<String, Long> Timeoutmap = new HashMap<String, Long>();
+    public HashMap<String, BossBar> Barmap = new HashMap<String,BossBar>();
     public Game(){
 
         System.out.println("Game created");
