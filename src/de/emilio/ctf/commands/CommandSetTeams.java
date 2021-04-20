@@ -1,5 +1,7 @@
-package de.emilio.ctf;
+package de.emilio.ctf.commands;
 
+import de.emilio.ctf.Game;
+import de.emilio.ctf.Team;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,6 +11,7 @@ import org.bukkit.entity.Player;
 public class CommandSetTeams implements CommandExecutor {
     Game game;
     final private ChatColor[] colors = {ChatColor.BLUE, ChatColor.RED , ChatColor.LIGHT_PURPLE ,ChatColor.WHITE};
+    final private int[] colorcodes = {11,14,6,0};
     public  CommandSetTeams(Game game){
         this.game = game;
     }
@@ -30,10 +33,11 @@ public class CommandSetTeams implements CommandExecutor {
                 }
                 Team[] teams = new Team[numteams];
                 for (int i=0; i< numteams; i++){
-                    teams[i] = new Team(colors[i], 0,i);
+                    teams[i] = new Team(colors[i], colorcodes[i],0,i);
                 }
                 this.game.teams = teams;
                 this.game.printTeams();
+                this.game.createInv();
             }
         }else {
             sender.sendMessage("You don't have enough permissions");

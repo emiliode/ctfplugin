@@ -13,3 +13,6 @@ commands:
     description: Set the number of teams
     usage: /<command> <number of teams>
     permission: ctf.admin
+  join:
+    description: Join a team
+    usage: /join [<optional team id>]

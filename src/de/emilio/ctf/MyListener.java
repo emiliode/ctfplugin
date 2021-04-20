@@ -6,6 +6,7 @@ import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scoreboard.*;
 
@@ -18,6 +19,26 @@ public class MyListener implements Listener {
     public void onJoin(PlayerJoinEvent event ){
         event.getPlayer().sendMessage("Hello to the server");
         createBoard(event.getPlayer());
+    }
+    @EventHandler
+    public void onClick(InventoryClickEvent event){
+        if(!event.getInventory().equals(game.inv)){return;}
+        if(event.getCurrentItem() == null){return;}
+        if (event.getCurrentItem().getItemMeta() == null)return;
+        if (event.getCurrentItem().getItemMeta().getDisplayName() == null)return;
+
+        event.setCancelled(true);
+        Player player = (Player) event.getWhoClicked();
+
+        for (int i = 0; i < game.teams.length; i++) {
+            if (event.getSlot() ==i){
+                game.addPlayer(player, i);
+            }
+        }
+        if(event.getSlot() == 8){
+            player.closeInventory();
+        }
+
     }
     public static void createBoard(Player player){
        // System.out.println("Creating Board");

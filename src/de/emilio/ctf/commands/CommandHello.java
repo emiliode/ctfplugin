@@ -1,4 +1,4 @@
-package de.emilio.ctf;
+package de.emilio.ctf.commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
