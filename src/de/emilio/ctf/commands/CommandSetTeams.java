@@ -51,7 +51,7 @@ public class CommandSetTeams implements CommandExecutor {
                         Player player = (Player) sender;
                         ItemStack item = new ItemStack(Material.STAINED_GLASS,1, DyeColor.BLACK.getData());
                         ItemMeta meta = item.getItemMeta();
-                        meta.setDisplayName( ChatColor.BLACK+"Flaggenblock");
+                        meta.setDisplayName( ChatColor.BLACK +"Flaggenblock");
                         meta.addEnchant(Enchantment.DAMAGE_ARTHROPODS, 10, true);
                         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                         ArrayList<String> lore = new ArrayList<String>();

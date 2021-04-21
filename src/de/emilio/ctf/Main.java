@@ -30,7 +30,7 @@ public class Main extends JavaPlugin  {
         System.out.println(game.pointstowin);
         game.useHelmet = getConfig().getBoolean("variables.useHelmet");
         this.getServer().getPluginManager().registerEvents(new MyListener(game, this),this);
-        this.getCommand("hello").setExecutor(new CommandHello());
+        this.getCommand("hello").setExecutor(new CommandHello(game));
         this.getCommand("setteams").setExecutor(new CommandSetTeams(game));
         this.getCommand("start").setExecutor(new CommandStart(game));
         this.getCommand("join").setExecutor(new CommandjoinTeam(game));

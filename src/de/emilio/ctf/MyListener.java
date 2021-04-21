@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -46,14 +47,9 @@ public class MyListener implements Listener {
 
                 if (item.getEnchantmentLevel(Enchantment.DAMAGE_ARTHROPODS) == 10) {
                     byte color=(byte)game.getTeam(ev.getPlayer()).getColordata();
-                    //ItemStack stack = new ItemStack(Material.STAINED_GLASS, 1, item.getDurability());
                     ev.getClickedBlock().setType(Material.STAINED_GLASS);
                     ev.getClickedBlock().setData(color);
-                    /*if(ev.getPlayer().getItemInHand().getAmount()>1){
-                        ev.getPlayer().getItemInHand().setAmount(ev.getPlayer().getItemInHand().getAmount()-1);
-                    }else {
-                        ev.getPlayer().getInventory().remove(item);
-                    }*/
+
                     Location loc = ev.getClickedBlock().getLocation();
 
                     long timeInTicks = 2;
@@ -96,7 +92,24 @@ public class MyListener implements Listener {
         } catch (Exception e) {
         }
     }
+    @EventHandler
+    public void onDeath(PlayerDeathEvent event){
+        if(event.getEntity().getInventory().getHelmet() == null) {return;};
+        if(event.getEntity().getInventory().getHelmet().getType()==Material.BANNER){
+            if(game.teams[Integer.parseInt(event.getEntity().getInventory().getHelmet().getItemMeta().getDisplayName())]!=null){
+                game.teams[Integer.parseInt(event.getEntity().getInventory().getHelmet().getItemMeta().getDisplayName())].setFlagCords(event.getEntity().getLocation());
+            }
+            event.getEntity().getLocation().getBlock().setType(Material.STANDING_BANNER);
+            Banner banner = (Banner) event.getEntity().getLocation().getBlock().getState();
+            banner.setBaseColor(DyeColor.getByDyeData((byte) (event.getEntity().getInventory().getHelmet().getDurability())));
+            banner.update();
+            ItemStack air = new ItemStack(Material.AIR,1);
+            event.getEntity().getInventory().setHelmet(air);
 
+
+        }
+
+    }
     @EventHandler
     public void onClick(InventoryClickEvent event){
         if(!event.getInventory().getTitle().equals("Teamauswahl")){return;}
@@ -124,6 +137,10 @@ public class MyListener implements Listener {
         if (e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
             Player whoWasHit = (Player) e.getEntity();
             Player whoHit = (Player) e.getDamager();
+            if(game.getTeam(whoHit)==null||game.getTeam(whoWasHit)==null){
+                e.setCancelled(true);
+                return;
+            }
             for (Team team:
                     game.teams) {
                 if(team.isInTeam(whoWasHit) && team.isInTeam(whoHit)){
@@ -137,7 +154,7 @@ public class MyListener implements Listener {
     public void onRespawn(PlayerRespawnEvent event){
         Player player = event.getPlayer();
         game.Timeoutmap.put(player.getName(),( System.currentTimeMillis()/1000+ 20));
-        player.setGameMode(GameMode.ADVENTURE);
+        player.setGameMode(GameMode.SPECTATOR);
         BossBar bossBar = BossBarAPI.addBar(player, // The receiver of the BossBar
                 new TextComponent("Reentering  !"), // Displayed message
                 BossBarAPI.Color.BLUE, // Color of the bar
@@ -166,9 +183,9 @@ public class MyListener implements Listener {
 
             if(team==null){
                 return;
-            }if(team.getFlagCords()==null){return;}
+            }
 
-            if(((int)event.getTo().getX())==(team.getFlagCords().getX())&&((int)event.getTo().getY())==(team.getFlagCords().getY())&&((int)event.getTo().getZ())==(team.getFlagCords().getZ())) {
+            if(team.getFlagCords()!=null&&((int)event.getTo().getX())==((int)team.getFlagCords().getX())&&((int)event.getTo().getY())==((int)team.getFlagCords().getY())&&((int)event.getTo().getZ())==((int)team.getFlagCords().getZ())) {
                 if (team.getId() != game.getTeam(event.getPlayer()).getId()) {
                     ItemStack flag = new ItemStack(Material.BANNER, 1, (short) (15-(team.getColordata())));
                     ItemMeta meta = flag.getItemMeta();
@@ -180,7 +197,7 @@ public class MyListener implements Listener {
                     team.getFlagCords().getBlock().setType(Material.AIR);
                     team.setFlagCords(null);
                 }
-            } if(team.getId()==game.getTeam(event.getPlayer()).getId()&&((int)event.getTo().getX())==(team.getTeamRespawn().getX())&&((int)event.getTo().getY())==(team.getTeamRespawn().getY())&&((int)event.getTo().getZ())==(team.getTeamRespawn().getZ())){
+            } if(team.getTeamRespawn()!=null&&team==game.getTeam(event.getPlayer())&&((int)event.getTo().getX())==((int)team.getTeamRespawn().getX())&&((int)event.getTo().getY())==((int)team.getTeamRespawn().getY())&&((int)event.getTo().getZ())==((int)team.getTeamRespawn().getZ())){
                     System.out.println("DU BRINGST DIE FLAGGE ZURÜCK");
                     ItemStack flagge;
                     if(event.getPlayer().getInventory().getHelmet() == null) {return;};
@@ -192,9 +209,13 @@ public class MyListener implements Listener {
                         event.getPlayer().getInventory().setHelmet(air);
                         Team pTeam = game.teams[Integer.parseInt(flagge.getItemMeta().getDisplayName())];
                         pTeam.getTeamRespawn().getBlock().setType(Material.STANDING_BANNER);
+                        pTeam.setFlagCords(pTeam.getTeamRespawn());
                         Banner banner = (Banner) pTeam.getTeamRespawn().getBlock().getState();
                         banner.setBaseColor(DyeColor.getByDyeData((byte) (15- pTeam.getColordata())));
                         banner.update();
+                        if(team.getScore()==game.pointstowin){
+
+                        }
                     }
 
             }
@@ -202,9 +223,12 @@ public class MyListener implements Listener {
     }
     private void giveFlag(Player player, ItemStack flag, String name){
         if(game.useHelmet){
-            ItemStack helmet = player.getInventory().getHelmet();
+            if(player.getInventory().getHelmet()!=null){
+                ItemStack helmet = player.getInventory().getHelmet();
+                player.getInventory().addItem(helmet);
+            }
             player.getInventory().setHelmet(flag);
-            player.getInventory().addItem(helmet);
+
         }else {
             Location ploc = player.getLocation().add(0, 1.5, 0);
             ArmorStand as = (ArmorStand) ploc.getWorld().spawn(ploc, ArmorStand.class);

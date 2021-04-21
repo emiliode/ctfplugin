@@ -54,12 +54,14 @@ public class Game {
     public void addPlayer(Player player, int teamid){
         for (Team team:teams
              ) {
-            if(teamid == team.getId()){
+            if(team.isInTeam(player)){
+                team.removePlayer(player);
+            }if(teamid == team.getId()){
                 team.addPlayer(player);
                 player.sendMessage("You are now in team: "+team.getColor()+team.getName() );
-            }else{
-                team.removePlayer(player);
             }
+
+
         }
     }
 }
