@@ -16,3 +16,8 @@ commands:
   join:
     description: Join a team
     usage: /join [<optional team id>]
+  start:
+    description: Start the game if everyone is ready type /ready
+    usage: /start
+  ready:
+    description: Only works if game is started starts the pvp session

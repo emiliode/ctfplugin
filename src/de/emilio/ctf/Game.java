@@ -1,5 +1,6 @@
 package de.emilio.ctf;
 
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 
 import org.bukkit.entity.Player;
@@ -7,17 +8,22 @@ import org.bukkit.inventory.Inventory;
 
 import org.bukkit.scoreboard.Scoreboard;
 import org.inventivetalent.bossbar.BossBar;
+import org.inventivetalent.bossbar.BossBarAPI;
 
 
 import java.util.HashMap;
 
 
 public class Game {
-    public Scoreboard sb;
+    public  BossBar flagtaken;
     public Inventory inv = null;
     public Team[] teams;
     public HashMap<String, Long> Timeoutmap = new HashMap<String, Long>();
     public HashMap<String, BossBar> Barmap = new HashMap<String,BossBar>();
+    public int pointstowin;
+    public boolean pvp;
+    public boolean started;
+    public boolean useHelmet;
     public Game(){
 
         System.out.println("Game created");
@@ -35,45 +41,25 @@ public class Game {
             Bukkit.broadcastMessage(team.getColor()+String.valueOf(team.getId()));
         }
     }
-/*    public void createInv(){
-        this.inv = Bukkit.createInventory(null,9 , ChatColor.GOLD+""+ChatColor.BOLD+"Change Team");
-        List<String> lore = new ArrayList<String >();
-        lore.add("Click to join team");
-        lore.add("Some other lore");
-        for (int i = 0; i < this.teams.length; i++) {
-            ItemStack item  = new ItemStack(Material.WOOL,1,this.teams[i].getColordata());
-            ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(this.teams[i].getColor()+""+ this.teams[i].getId());
-            meta.setLore(lore);
-            item.setItemMeta(meta);
-            this.inv.setItem(i,item);
+    public Team getTeam(Player player){
+        for (Team team :
+                teams) {
+            if(team.isInTeam(player)){
+                return team;
+            }
         }
-        ItemStack item = new ItemStack(Material.BARRIER);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("CANCEL");
-        lore.remove(0);
-        lore.add("Click to cancel");
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-        this.inv.setItem(8,item);
-    }*/
+        return null;
+    }
+
     public void addPlayer(Player player, int teamid){
         for (Team team:teams
              ) {
             if(teamid == team.getId()){
                 team.addPlayer(player);
-                player.sendMessage("You are now in the team with this "+team.getColor()+"color" );
+                player.sendMessage("You are now in team: "+team.getColor()+team.getName() );
             }else{
                 team.removePlayer(player);
             }
         }
-    }
-    public Team getTeam(Player player){
-        for(Team team : teams){
-            if(team.getPlayers().contains(player.getName())){
-                return  team;
-            }
-        }
-        return  null;
     }
 }

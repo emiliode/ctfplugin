@@ -28,17 +28,14 @@ public class CommandjoinTeam implements CommandExecutor {
             return true;
         }
         Player player = (Player) sender;
-        // open GUI
-        /*if(args.length>0){
-            int teamID=Integer.parseInt(args[0]);
-            game.addPlayer(player,teamID );
+        if (game.teams == null){
+            player.sendMessage("You must create some teams first");
             return true;
-        }else if(!(game.inv == null)) {
-            player.openInventory(game.inv);
-            return true;
-        }*/
+        }
+
+
         openTeamInv(player);
-        player.sendMessage("You must create some teams first");
+
         return true;
     }
     public void openTeamInv(Player p){

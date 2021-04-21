@@ -1,5 +1,7 @@
 package de.emilio.ctf.commands;
 
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,6 +15,7 @@ public class CommandHello implements CommandExecutor {
                     Player player = (Player) sender;
                     if (player.hasPermission("none")) {
                         player.sendMessage(ChatColor.DARK_BLUE + "" + ChatColor.BOLD + "Hey welcome to the server");
+                        //TitleAPI.sendTitle(player,2,10,2,"Your Flag was taken","");
                     }else{
                         player.sendMessage("No permission");
                     }

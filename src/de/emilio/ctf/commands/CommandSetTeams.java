@@ -44,8 +44,7 @@ public class CommandSetTeams implements CommandExecutor {
                     sender.sendMessage("Invalid Number");
                     return false;
                 }
-                Team[] teams = new Team[numteams];
-                this.game.sb = Bukkit.getScoreboardManager().getNewScoreboard();
+                Team[] teams = new Team[numteams];;
                 for (int i=0; i< numteams; i++){
                     teams[i] = new Team(colors[i], colorcodes[i],0,i,names[i] );
                     if(sender instanceof Player){

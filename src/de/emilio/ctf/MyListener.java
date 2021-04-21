@@ -1,12 +1,11 @@
 package de.emilio.ctf;
 
-import com.sun.javafx.scene.traversal.Direction;
-import com.sun.xml.internal.ws.api.addressing.WSEndpointReference;
 import org.bukkit.*;
 import org.bukkit.block.Banner;
 import org.bukkit.enchantments.Enchantment;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.GameMode;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -50,18 +49,17 @@ public class MyListener implements Listener {
                     //ItemStack stack = new ItemStack(Material.STAINED_GLASS, 1, item.getDurability());
                     ev.getClickedBlock().setType(Material.STAINED_GLASS);
                     ev.getClickedBlock().setData(color);
-                    if(ev.getPlayer().getItemInHand().getAmount()>1){
+                    /*if(ev.getPlayer().getItemInHand().getAmount()>1){
                         ev.getPlayer().getItemInHand().setAmount(ev.getPlayer().getItemInHand().getAmount()-1);
                     }else {
                         ev.getPlayer().getInventory().remove(item);
-                    }
+                    }*/
                     Location loc = ev.getClickedBlock().getLocation();
 
                     long timeInTicks = 2;
                     int[] intArray = {1, 1, -1, -1, -1, -1, +1, +1, 0};
                     int[] chArray = {'X', 'Y', 'X', 'X', 'Y', 'Y', 'X', 'X', 'X'};
                     final int[] yolo = {0};
-
                     new BukkitRunnable() {
                         @Override
                         public void run() {
@@ -153,13 +151,16 @@ public class MyListener implements Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent event){
         if(game.Timeoutmap.containsKey(event.getPlayer().getName())){
-            event.setCancelled(true);
-           // event.getPlayer().sendMessage("You are not allowed to move");
+            Location from = event.getFrom();
+            Location to = event.getTo();
+            if( event.getTo().getBlockX() != event.getFrom().getBlockX() || event.getTo().getBlockY() != event.getFrom().getBlockY() || event.getTo().getBlockZ() != event.getFrom().getBlockZ()){
+                event.setCancelled(true);
+            }
+           event.getPlayer().sendMessage(ChatColor.RED+"You are not allowed to move");
         }
-        if(game.teams==null){
-            return;
-        }
-
+        if(game.teams == null){
+            return;}
+        //System.out.println("Checking for flag");
         for (Team team:
              game.teams) {
 
@@ -173,16 +174,18 @@ public class MyListener implements Listener {
                     ItemMeta meta = flag.getItemMeta();
                     meta.setDisplayName(team.getId()+"");
                     flag.setItemMeta(meta);
-                    ItemStack helmet = event.getPlayer().getInventory().getHelmet();
-                    event.getPlayer().getInventory().setHelmet(flag);
-                    event.getPlayer().getInventory().addItem(helmet);
+                    giveFlag(event.getPlayer(),flag, team.getName());
+                    showBoards(team);
+                    team.setFlaggenträger(event.getPlayer().getName());
                     team.getFlagCords().getBlock().setType(Material.AIR);
                     team.setFlagCords(null);
                 }
             } if(team.getId()==game.getTeam(event.getPlayer()).getId()&&((int)event.getTo().getX())==(team.getTeamRespawn().getX())&&((int)event.getTo().getY())==(team.getTeamRespawn().getY())&&((int)event.getTo().getZ())==(team.getTeamRespawn().getZ())){
-
-                    ItemStack flagge = new ItemStack(Material.BANNER);
+                    System.out.println("DU BRINGST DIE FLAGGE ZURÜCK");
+                    ItemStack flagge;
+                    if(event.getPlayer().getInventory().getHelmet() == null) {return;};
                     if(event.getPlayer().getInventory().getHelmet().getType()==Material.BANNER){
+                        flagge =event.getPlayer().getInventory().getHelmet();
                         ItemStack air = new ItemStack(Material.AIR,1);
                         team.addScore();
                         event.getPlayer().sendMessage("SUPER KLASSE PUNKT");
@@ -191,10 +194,44 @@ public class MyListener implements Listener {
                         pTeam.getTeamRespawn().getBlock().setType(Material.STANDING_BANNER);
                         Banner banner = (Banner) pTeam.getTeamRespawn().getBlock().getState();
                         banner.setBaseColor(DyeColor.getByDyeData((byte) (15- pTeam.getColordata())));
-                        banner.update();    
+                        banner.update();
                     }
 
             }
+        }
+    }
+    private void giveFlag(Player player, ItemStack flag, String name){
+        if(game.useHelmet){
+            ItemStack helmet = player.getInventory().getHelmet();
+            player.getInventory().setHelmet(flag);
+            player.getInventory().addItem(helmet);
+        }else {
+            Location ploc = player.getLocation().add(0, 1.5, 0);
+            ArmorStand as = (ArmorStand) ploc.getWorld().spawn(ploc, ArmorStand.class);
+            as.setGravity(false);
+            as.setCanPickupItems(false);
+            //as.setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
+            as.setCustomName(name);
+            ItemStack Banner = new ItemStack(Material.BANNER,1,(short)14);
+            as.setHelmet(Banner);
+            as.setCustomNameVisible(true);
+            as.setVisible(false);
+            player.setPassenger(as);
+        }
+
+    }
+    private void removeFlag(Player player, String name){
+        if(game.useHelmet){
+            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),  "kill @e[name="+name+"]");
+
+        }else{
+
+        }
+    }
+    private void showBoards(Team team){
+        for (String playername:
+             team.getPlayers()) {
+            //TitleAPI.sendTitle(Bukkit.getPlayer(playername),2,10,2,"Title","Subtitle");
         }
     }
 }

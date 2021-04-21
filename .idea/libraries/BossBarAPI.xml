@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="BossBarAPI">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../../../programmieren/Java/Games/Spigot plugin/BossBarAPI.jar!/" />
+      <root url="jar://$USER_HOME$/spigotserver/plugins/BossBarAPI.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
