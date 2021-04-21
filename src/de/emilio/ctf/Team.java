@@ -33,6 +33,9 @@ public class Team {
     public void setFlagCords(Location cords){
         flagCords = cords;
     }
+    public void addScore(){
+        score++;
+    }
     public Location getFlagCords(){
         return flagCords;
     }

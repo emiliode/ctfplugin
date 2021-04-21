@@ -1,10 +1,12 @@
 package de.emilio.ctf;
 
+import com.sun.javafx.scene.traversal.Direction;
 import org.bukkit.*;
 import org.bukkit.block.Banner;
 import org.bukkit.enchantments.Enchantment;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.GameMode;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,6 +21,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.util.Vector;
 import org.inventivetalent.bossbar.BossBar;
 import org.inventivetalent.bossbar.BossBarAPI;
 
@@ -42,11 +45,17 @@ public class MyListener implements Listener {
                 item.setItemMeta(meta);
 
                 if (item.getEnchantmentLevel(Enchantment.DAMAGE_ARTHROPODS) == 10) {
+                    byte color=(byte)game.getTeam(ev.getPlayer()).getColordata();
                     //ItemStack stack = new ItemStack(Material.STAINED_GLASS, 1, item.getDurability());
                     ev.getClickedBlock().setType(Material.STAINED_GLASS);
-                    ev.getClickedBlock().setData((byte) item.getDurability());
-                    ev.getPlayer().getInventory().remove(item);
+                    ev.getClickedBlock().setData(color);
+                    if(ev.getPlayer().getItemInHand().getAmount()>1){
+                        ev.getPlayer().getItemInHand().setAmount(ev.getPlayer().getItemInHand().getAmount()-1);
+                    }else {
+                        ev.getPlayer().getInventory().remove(item);
+                    }
                     Location loc = ev.getClickedBlock().getLocation();
+
                     long timeInTicks = 2;
                     int[] intArray = {1, 1, -1, -1, -1, -1, +1, +1, 0};
                     int[] chArray = {'X', 'Y', 'X', 'X', 'Y', 'Y', 'X', 'X', 'X'};
@@ -61,7 +70,7 @@ public class MyListener implements Listener {
                                 loc.setZ(loc.getZ() + intArray[yolo[0]]);
                             }
                             loc.getBlock().setType(Material.STAINED_CLAY);
-                            loc.getBlock().setData((byte) item.getDurability());
+                            loc.getBlock().setData(color);
 
                             if (yolo[0] == 8) {
                                 loc.setX(loc.getX() - 1);
@@ -69,10 +78,11 @@ public class MyListener implements Listener {
                                 loc.setY(loc.getY() + 1);
                                 loc.getBlock().setType(Material.STANDING_BANNER);
                                 Banner banner = (Banner) loc.getBlock().getState();
-                                banner.setBaseColor(DyeColor.getByDyeData((byte) (15 - item.getDurability())));
+                                banner.setBaseColor(DyeColor.getByDyeData((byte) (15-color)));
                                 banner.update();
                                 this.cancel();
-                                ev.getPlayer().getEyeLocation().getDirection();
+                                Vector flagDirection = ev.getPlayer().getEyeLocation().getDirection().multiply(-1);
+                                game.teams[game.getTeam(ev.getPlayer()).getId()].setFlagCords(loc);
 
                             }
                             yolo[0]++;
@@ -86,6 +96,7 @@ public class MyListener implements Listener {
         } catch (Exception e) {
         }
     }
+
     @EventHandler
     public void onClick(InventoryClickEvent event){
         if(!event.getInventory().getTitle().equals("Teamauswahl")){return;}
@@ -123,7 +134,7 @@ public class MyListener implements Listener {
         }
     }
     @EventHandler
-    public void onRespwan(PlayerRespawnEvent event){
+    public void onRespawn(PlayerRespawnEvent event){
         Player player = event.getPlayer();
         game.Timeoutmap.put(player.getName(),( System.currentTimeMillis()/1000+ 20));
         player.setGameMode(GameMode.ADVENTURE);
@@ -142,6 +153,31 @@ public class MyListener implements Listener {
         if(game.Timeoutmap.containsKey(event.getPlayer().getName())){
             event.setCancelled(true);
            // event.getPlayer().sendMessage("You are not allowed to move");
+        }
+        for (Team team:
+             game.teams) {
+            if(team==null){
+                return;
+            }else if(team.getFlagCords()==null){return;}
+            if(event.getTo()==team.getFlagCords()){
+                event.getPlayer().sendMessage("über Flagge gelaufen");/*
+                if(team.getId()!=game.getTeam(event.getPlayer()).getId()) {
+                    event.getPlayer().sendMessage("über Gegner Flagge gelaufen");
+                    ItemStack flag = (ItemStack) team.getFlagCords().getBlock();
+                    ItemStack helmet = event.getPlayer().getInventory().getHelmet();
+                    event.getPlayer().getInventory().setHelmet(flag);
+                    event.getPlayer().getInventory().addItem(helmet);
+                    team.getFlagCords().getBlock().setType(Material.AIR);
+                */}/*else if(team.getId()==game.getTeam(event.getPlayer()).getId()){
+                    event.getPlayer().sendMessage("über Team Flagge gelaufen");
+                    ItemStack flagge = new ItemStack(Material.STANDING_BANNER);
+                    if(event.getPlayer().getInventory().getHelmet()==flagge){
+                        team.addScore();
+                       // event.getPlayer().getInventory().setHelmet(helmet);
+                    }
+
+                }
+            }*/
         }
     }
 }
