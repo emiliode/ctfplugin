@@ -15,6 +15,7 @@ public class Team {
     private int score;
     private int id;
     private Location flagCords= null;
+    private Location teamRespawn = null;
     private String name;
     private ArrayList<String> players;
     public Team(ChatColor color , short colorcode,int score, int id, String name){
@@ -44,6 +45,13 @@ public class Team {
         return name;
     }
 
+    public void setTeamRespawn(Location loc){
+        this.teamRespawn=loc;
+    }
+
+    public Location getTeamRespawn(){
+        return this.teamRespawn;
+    }
 
     public int getScore() {
         return this.score;

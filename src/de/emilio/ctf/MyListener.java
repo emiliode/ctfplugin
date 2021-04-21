@@ -1,6 +1,7 @@
 package de.emilio.ctf;
 
 import com.sun.javafx.scene.traversal.Direction;
+import com.sun.xml.internal.ws.api.addressing.WSEndpointReference;
 import org.bukkit.*;
 import org.bukkit.block.Banner;
 import org.bukkit.enchantments.Enchantment;
@@ -83,6 +84,7 @@ public class MyListener implements Listener {
                                 this.cancel();
                                 Vector flagDirection = ev.getPlayer().getEyeLocation().getDirection().multiply(-1);
                                 game.teams[game.getTeam(ev.getPlayer()).getId()].setFlagCords(loc);
+                                game.teams[game.getTeam(ev.getPlayer()).getId()].setTeamRespawn(loc);
 
                             }
                             yolo[0]++;
@@ -154,30 +156,45 @@ public class MyListener implements Listener {
             event.setCancelled(true);
            // event.getPlayer().sendMessage("You are not allowed to move");
         }
+        if(game.teams==null){
+            return;
+        }
+
         for (Team team:
              game.teams) {
+
             if(team==null){
                 return;
-            }else if(team.getFlagCords()==null){return;}
-            if(event.getTo()==team.getFlagCords()){
-                event.getPlayer().sendMessage("über Flagge gelaufen");/*
-                if(team.getId()!=game.getTeam(event.getPlayer()).getId()) {
-                    event.getPlayer().sendMessage("über Gegner Flagge gelaufen");
-                    ItemStack flag = (ItemStack) team.getFlagCords().getBlock();
+            }if(team.getFlagCords()==null){return;}
+
+            if(((int)event.getTo().getX())==(team.getFlagCords().getX())&&((int)event.getTo().getY())==(team.getFlagCords().getY())&&((int)event.getTo().getZ())==(team.getFlagCords().getZ())) {
+                if (team.getId() != game.getTeam(event.getPlayer()).getId()) {
+                    ItemStack flag = new ItemStack(Material.BANNER, 1, (short) (15-(team.getColordata())));
+                    ItemMeta meta = flag.getItemMeta();
+                    meta.setDisplayName(team.getId()+"");
+                    flag.setItemMeta(meta);
                     ItemStack helmet = event.getPlayer().getInventory().getHelmet();
                     event.getPlayer().getInventory().setHelmet(flag);
                     event.getPlayer().getInventory().addItem(helmet);
                     team.getFlagCords().getBlock().setType(Material.AIR);
-                */}/*else if(team.getId()==game.getTeam(event.getPlayer()).getId()){
-                    event.getPlayer().sendMessage("über Team Flagge gelaufen");
-                    ItemStack flagge = new ItemStack(Material.STANDING_BANNER);
-                    if(event.getPlayer().getInventory().getHelmet()==flagge){
+                    team.setFlagCords(null);
+                }
+            } if(team.getId()==game.getTeam(event.getPlayer()).getId()&&((int)event.getTo().getX())==(team.getTeamRespawn().getX())&&((int)event.getTo().getY())==(team.getTeamRespawn().getY())&&((int)event.getTo().getZ())==(team.getTeamRespawn().getZ())){
+
+                    ItemStack flagge = new ItemStack(Material.BANNER);
+                    if(event.getPlayer().getInventory().getHelmet().getType()==Material.BANNER){
+                        ItemStack air = new ItemStack(Material.AIR,1);
                         team.addScore();
-                       // event.getPlayer().getInventory().setHelmet(helmet);
+                        event.getPlayer().sendMessage("SUPER KLASSE PUNKT");
+                        event.getPlayer().getInventory().setHelmet(air);
+                        Team pTeam = game.teams[Integer.parseInt(flagge.getItemMeta().getDisplayName())];
+                        pTeam.getTeamRespawn().getBlock().setType(Material.STANDING_BANNER);
+                        Banner banner = (Banner) pTeam.getTeamRespawn().getBlock().getState();
+                        banner.setBaseColor(DyeColor.getByDyeData((byte) (15- pTeam.getColordata())));
+                        banner.update();    
                     }
 
-                }
-            }*/
+            }
         }
     }
 }
