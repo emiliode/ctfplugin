@@ -1,9 +1,6 @@
 package de.emilio.ctf;
 
-import de.emilio.ctf.commands.CommandHello;
-import de.emilio.ctf.commands.CommandSetTeams;
-import de.emilio.ctf.commands.CommandStart;
-import de.emilio.ctf.commands.CommandjoinTeam;
+import de.emilio.ctf.commands.*;
 import io.netty.util.Timeout;
 import org.bukkit.Bukkit;
 
@@ -18,7 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class Main extends JavaPlugin  {
     @Override
     public void onEnable(){
-        Game game = new Game();
+        Game game = new Game(this);
         if(this.getConfig() == null){
             this.saveDefaultConfig();
         }
@@ -34,6 +31,8 @@ public class Main extends JavaPlugin  {
         this.getCommand("setteams").setExecutor(new CommandSetTeams(game));
         this.getCommand("start").setExecutor(new CommandStart(game));
         this.getCommand("join").setExecutor(new CommandjoinTeam(game));
+        this.getCommand("ready").setExecutor(new CommandReady(game,this));
+        this.getCommand("setrespawn").setExecutor(new CommandSetRespawn(game));
         Bukkit.getConsoleSender().sendMessage("HAllo bitte funktioniert");
         if (!Bukkit.getOnlinePlayers().isEmpty()){
             for (Player online: Bukkit.getOnlinePlayers()){

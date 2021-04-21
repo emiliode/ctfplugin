@@ -3,6 +3,7 @@ package de.emilio.ctf.commands;
 import de.emilio.ctf.Game;
 import de.emilio.ctf.Team;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -22,22 +23,22 @@ public class CommandStart implements CommandExecutor {
         if(game.started){
             commandSender.sendMessage("The game has alreay started use /ready to start pvp");
         }
+        if(game.teams == null){
+            commandSender.sendMessage(ChatColor.RED+"Create some teams first !");
+        }
+        game.started = true;
 
-
-
-        //game.started = true;
-
-        /*for (Team team:
+        for (Team team:
                 game.teams) {
-            if(team.getRespawn() == null){
+            if(team.getTeamRespawn() == null){
                 commandSender.sendMessage("You must set the team respawns first");
             }
             for (String playername:
                  team.getPlayers()) {
-                Player otherplayer = Bukkit.getPlayer(playername);
-                player.teleport(team.getRespawn());
+                Player player = Bukkit.getPlayer(playername);
+                player.teleport(team.getTeamRespawn());
             }
-        }*/
+        }
         return true;
     }
 }

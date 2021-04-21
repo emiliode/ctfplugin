@@ -20,4 +20,8 @@ commands:
     description: Start the game if everyone is ready type /ready
     usage: /start
   ready:
-    description: Only works if game is started starts the pvp session
+    description: Makes you team ready for PVP. Only works if game is started starts the pvp session
+    usage: /ready
+  setrespawn:
+    description: Set your team spawn
+    usage: /setrespawn <Team Name> <x> <y> <z>

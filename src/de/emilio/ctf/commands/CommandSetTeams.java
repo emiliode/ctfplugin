@@ -34,6 +34,10 @@ public class CommandSetTeams implements CommandExecutor {
                 sender.sendMessage("USAGE: /setteams <number of teams> ");
                 return false;
             }else {
+                if (game.started){
+                    sender.sendMessage("Spiel ist bereits gestartet");
+                    return true;
+                }
                 int numteams;
                 try {
                     numteams = Integer.parseInt(args[0]);

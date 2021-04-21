@@ -34,11 +34,11 @@ public class CommandjoinTeam implements CommandExecutor {
         }
 
 
-        openTeamInv(player);
+        openTeamInv(player, this.game);
 
         return true;
     }
-    public void openTeamInv(Player p){
+    public static void openTeamInv(Player p, Game game){
         Inventory inv = Bukkit.createInventory(null,9,"Teamauswahl");
         for (int i=0; i<game.teams.length;i++){
             inv.setItem(i,game.teams[i].getIcon());

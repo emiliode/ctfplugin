@@ -1,5 +1,7 @@
 package de.emilio.ctf;
 
+import com.connorlinfoot.titleapi.TitleAPI;
+import de.emilio.ctf.commands.CommandjoinTeam;
 import org.bukkit.*;
 import org.bukkit.block.Banner;
 import org.bukkit.enchantments.Enchantment;
@@ -35,7 +37,11 @@ public class MyListener implements Listener {
     }
     @EventHandler
     public void onJoin(PlayerJoinEvent event ){
-        event.getPlayer().sendMessage("Hello to the server");}
+        event.getPlayer().sendMessage("Hello to the server");
+        if(game.getTeam(event.getPlayer()) == null ){
+            event.getPlayer().setGameMode(GameMode.ADVENTURE);
+        }
+    }
     @EventHandler
     public void onItemClick(PlayerInteractEvent ev) {
         try {
@@ -123,11 +129,15 @@ public class MyListener implements Listener {
         for (int i = 0; i < game.teams.length; i++) {
             if (event.getSlot() ==i){
                 game.addPlayer(player, i);
+                player.setGameMode(GameMode.SURVIVAL);
                 player.setPlayerListName(game.teams[i].getColor()+player.getName());
+                player.closeInventory();
+                CommandjoinTeam.openTeamInv(player,game);
             }
         }
         if(event.getSlot() == 8){
             player.closeInventory();
+
         }
 
     }
@@ -153,7 +163,7 @@ public class MyListener implements Listener {
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event){
         Player player = event.getPlayer();
-        game.Timeoutmap.put(player.getName(),( System.currentTimeMillis()/1000+ 20));
+        game.Timeoutmap.put(player.getName(),( System.currentTimeMillis()/1000+ 10));
         player.setGameMode(GameMode.SPECTATOR);
         BossBar bossBar = BossBarAPI.addBar(player, // The receiver of the BossBar
                 new TextComponent("Reentering  !"), // Displayed message
@@ -162,7 +172,7 @@ public class MyListener implements Listener {
                 1.0f); // Timeout-interval
         //BossBar bossBar1 = BossBarAPI.addBar(player, new TextComponent("Respawn"),BossBarAPI.Color.BLUE, BossBarAPI.Style.NOTCHED_20,1.0f,20,2);
         //bossBar.setProgress(-1.0f);
-        System.out.println("BITTE SEI 1 DU HUSO:"+bossBar.getProgress());
+        //System.out.println("BITTE SEI 1 DU HUSO:"+bossBar.getProgress());
         game.Barmap.put(player.getName(),bossBar);
     }
     @EventHandler
@@ -188,6 +198,7 @@ public class MyListener implements Listener {
             if(team.getFlagCords()!=null&&((int)event.getTo().getX())==((int)team.getFlagCords().getX())&&((int)event.getTo().getY())==((int)team.getFlagCords().getY())&&((int)event.getTo().getZ())==((int)team.getFlagCords().getZ())) {
                 if (team.getId() != game.getTeam(event.getPlayer()).getId()) {
                     ItemStack flag = new ItemStack(Material.BANNER, 1, (short) (15-(team.getColordata())));
+                    notifyPlayers(team.getName());
                     ItemMeta meta = flag.getItemMeta();
                     meta.setDisplayName(team.getId()+"");
                     flag.setItemMeta(meta);
@@ -221,6 +232,12 @@ public class MyListener implements Listener {
             }
         }
     }
+    private void notifyPlayers(String name){
+        for (Player player:
+             Bukkit.getOnlinePlayers()) {
+            TitleAPI.sendTitle(player,2,15,2,"§cYour Flag was taken","");
+        }
+    }
     private void giveFlag(Player player, ItemStack flag, String name){
         if(game.useHelmet){
             if(player.getInventory().getHelmet()!=null){
@@ -246,10 +263,9 @@ public class MyListener implements Listener {
     }
     private void removeFlag(Player player, String name){
         if(game.useHelmet){
-            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),  "kill @e[name="+name+"]");
-
+            return;
         }else{
-
+            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),  "kill @e[name="+name+"]");
         }
     }
     private void showBoards(Team team){

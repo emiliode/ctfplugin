@@ -1,11 +1,13 @@
 package de.emilio.ctf;
 
+import com.connorlinfoot.titleapi.TitleAPI;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.inventivetalent.bossbar.BossBar;
 import org.inventivetalent.bossbar.BossBarAPI;
@@ -24,8 +26,10 @@ public class Game {
     public boolean pvp;
     public boolean started;
     public boolean useHelmet;
-    public Game(){
 
+    private JavaPlugin plugin;
+    public Game(JavaPlugin plugin){
+        this.plugin = plugin;
         System.out.println("Game created");
 
     }
@@ -42,11 +46,22 @@ public class Game {
         }
     }
     public Team getTeam(Player player){
+        if (teams == null){return null;}
         for (Team team :
                 teams) {
             if(team.isInTeam(player)){
                 return team;
             }
+        }
+        return null;
+    }
+    public Team getTeam(String name){
+        if (teams == null){return null;}
+        for(Team team: teams){
+            System.out.println(team.getName());
+          if (team.getName().equalsIgnoreCase(name)){
+              return team;
+          }
         }
         return null;
     }
@@ -62,6 +77,13 @@ public class Game {
             }
 
 
+        }
+    }
+    public void startPvP(){
+        this.pvp =true;
+        for (Player player:
+             Bukkit.getOnlinePlayers()) {
+            TitleAPI.sendTitle(player,0,40,2,"ATTACK !!!","");
         }
     }
 }

@@ -17,9 +17,9 @@ public class Team {
     private Location flagCords= null;
     private Location teamRespawn = null;
     private String name;
-    private Location respawn;
     private ArrayList<String> players;
     private String Flaggenträger;
+    private boolean ready =false;
     public Team(ChatColor color , short colorcode,int score, int id, String name){
         this.color = color;
         this.colorData = colorcode;
@@ -99,13 +99,7 @@ public class Team {
         return it;
     }
 
-    public Location getRespawn() {
-        return respawn;
-    }
 
-    public void setRespawn(Location respawn) {
-        this.respawn = respawn;
-    }
 
     public String getFlaggenträger() {
         return Flaggenträger;
@@ -113,5 +107,11 @@ public class Team {
 
     public void setFlaggenträger(String flaggenträger) {
         Flaggenträger = flaggenträger;
+    }
+    public boolean isReady(){
+        return ready;
+    }
+    public void setReady(boolean ready){
+        this.ready = ready;
     }
 }

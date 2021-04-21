@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="ctf">
+  <artifact type="jar" build-on-make="true" name="ctf">
     <output-path>$USER_HOME$/spigotserver/plugins</output-path>
     <root id="archive" name="ctf.jar">
       <element id="module-output" name="ctf_Plugin" />
