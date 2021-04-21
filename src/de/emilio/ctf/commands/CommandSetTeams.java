@@ -4,6 +4,7 @@ import de.emilio.ctf.Game;
 import de.emilio.ctf.Team;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -48,9 +49,9 @@ public class CommandSetTeams implements CommandExecutor {
                     teams[i] = new Team(colors[i], colorcodes[i],0,i,names[i] );
                     if(sender instanceof Player){
                         Player player = (Player) sender;
-                        ItemStack item = new ItemStack(Material.STAINED_GLASS,1, (short) colorcodes[i]);
+                        ItemStack item = new ItemStack(Material.STAINED_GLASS,1, DyeColor.BLACK.getData());
                         ItemMeta meta = item.getItemMeta();
-                        meta.setDisplayName( colors[i]+"Flaggenblock von Team "+colors[i]+ i);
+                        meta.setDisplayName( ChatColor.BLACK+"Flaggenblock");
                         meta.addEnchant(Enchantment.DAMAGE_ARTHROPODS, 10, true);
                         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                         ArrayList<String> lore = new ArrayList<String>();

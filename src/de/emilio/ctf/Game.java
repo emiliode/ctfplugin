@@ -71,4 +71,12 @@ public class Game {
             }
         }
     }
+    public Team getTeam(Player player){
+        for(Team team : teams){
+            if(team.getPlayers().contains(player.getName())){
+                return  team;
+            }
+        }
+        return  null;
+    }
 }
