@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -50,6 +51,15 @@ public class MyListener implements Listener {
     @EventHandler
     public void onItemClick(PlayerInteractEvent ev) {
         try {
+            if (game.unbreaking){
+                if (ev.getItem() != null) {
+                    if (isTool(ev.getItem().getType()) || ev.getItem().getType() == Material.FISHING_ROD || ev.getItem().getType() == Material.FLINT_AND_STEEL){
+                        ev.getItem().setDurability((short) 1);
+                    }
+                }
+            }
+
+
             if (ev.getPlayer().getItemInHand().getType() != Material.AIR && ev.getClickedBlock().getType() != null) {
                 ItemStack item = ev.getPlayer().getItemInHand();
                 ItemMeta meta = item.getItemMeta();
@@ -150,8 +160,19 @@ public class MyListener implements Listener {
     @EventHandler
     public void onHit(EntityDamageByEntityEvent e) {
         if (e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
+            if(!game.pvp){
+                e.setCancelled(true);
+            }
             Player whoWasHit = (Player) e.getEntity();
             Player whoHit = (Player) e.getDamager();
+            if(game.unbreaking) {
+                    whoHit.getItemInHand().setDurability((short) 1);
+            }
+            else if (e.getEntity() instanceof Player) {
+                ItemStack[] armour = ((Player) e.getEntity()).getInventory().getArmorContents();
+                for (ItemStack i : armour) i.setDurability((short) 0);
+                ((Player) e.getEntity()).getInventory().setArmorContents(armour);
+            }
             if(game.getTeam(whoHit)==null||game.getTeam(whoWasHit)==null){
                 e.setCancelled(true);
                 return;
@@ -168,19 +189,20 @@ public class MyListener implements Listener {
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event){
         Player player = event.getPlayer();
-        game.Timeoutmap.put(player.getName(),( System.currentTimeMillis()/1000+ 10));
+        game.Timeoutmap.put(player.getName(),( System.currentTimeMillis()/1000+ 20));
         player.setGameMode(GameMode.SPECTATOR);
+
+        if((game.getTeam(player)!= null) && (game.getTeam(player).getTeamRespawn() != null)){
+             event.setRespawnLocation(game.getTeam(player).getTeamRespawn());
+        }else {
+           event.setRespawnLocation(Bukkit.getWorlds().get(0).getSpawnLocation().add(0, 2, 0));
+        }
         BossBar bossBar = BossBarAPI.addBar(player, // The receiver of the BossBar
                 new TextComponent("Reentering  !"), // Displayed message
                 BossBarAPI.Color.BLUE, // Color of the bar
                 BossBarAPI.Style.NOTCHED_20, // Bar style
                 1.0f); // Timeout-interval
         game.Barmap.put(player.getName(),bossBar);
-        if((game.getTeam(player)!= null) && (game.getTeam(player).getTeamRespawn() != null)){
-            player.teleport(game.getTeam(player).getTeamRespawn());
-        }else {
-            player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation().add(0, 2, 0));
-        }
     }
     @EventHandler
     public void onMove(PlayerMoveEvent event){
@@ -270,6 +292,15 @@ public class MyListener implements Listener {
         }
 
     }
+    @EventHandler(ignoreCancelled = true)
+    public void noWeaponBreakDamage(EntityShootBowEvent event) {
+        try {
+            if (game.unbreaking) {
+                if (event.getEntity() instanceof Player) event.getBow().setDurability((short) 1);
+            }
+        } catch (Exception ex) {
+        }
+    }
     private void removeFlag(Player player, String name){
         if(game.useHelmet){
             return;
@@ -283,4 +314,8 @@ public class MyListener implements Listener {
             //TitleAPI.sendTitle(Bukkit.getPlayer(playername),2,10,2,"Title","Subtitle");
         }
     }
+    private boolean isTool(Material material) {
+        return material == Material.WOOD_SWORD || material == Material.STONE_SWORD || material == Material.GOLD_SWORD || material == Material.IRON_SWORD || material == Material.DIAMOND_SWORD || material == Material.WOOD_PICKAXE || material == Material.STONE_PICKAXE || material == Material.GOLD_PICKAXE || material == Material.IRON_PICKAXE || material == Material.DIAMOND_PICKAXE || material == Material.WOOD_AXE || material == Material.STONE_AXE || material == Material.GOLD_AXE || material == Material.IRON_AXE || material == Material.DIAMOND_AXE || material == Material.WOOD_SPADE || material == Material.STONE_SPADE || material == Material.GOLD_SPADE || material == Material.IRON_SPADE || material == Material.DIAMOND_SPADE || material == Material.WOOD_HOE || material == Material.STONE_HOE || material == Material.GOLD_HOE || material == Material.IRON_HOE || material == Material.DIAMOND_HOE;
+    }
+
 }

@@ -26,6 +26,7 @@ public class Game {
     public boolean pvp;
     public boolean started;
     public boolean useHelmet;
+    public boolean unbreaking;
 
     private JavaPlugin plugin;
     public Game(JavaPlugin plugin){
