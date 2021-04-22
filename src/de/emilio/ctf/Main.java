@@ -33,7 +33,7 @@ public class Main extends JavaPlugin  {
         this.getCommand("join").setExecutor(new CommandjoinTeam(game));
         this.getCommand("ready").setExecutor(new CommandReady(game,this));
         this.getCommand("setrespawn").setExecutor(new CommandSetRespawn(game));
-        Bukkit.getConsoleSender().sendMessage("HAllo bitte funktioniert");
+        Bukkit.getConsoleSender().sendMessage("Iam Happy cause iam loaded");
         if (!Bukkit.getOnlinePlayers().isEmpty()){
             for (Player online: Bukkit.getOnlinePlayers()){
                 //MyListener.createBoard(online);

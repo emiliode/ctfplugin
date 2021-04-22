@@ -1,6 +1,5 @@
 package de.emilio.ctf;
 
-import com.sun.javafx.scene.traversal.Direction;
 import com.connorlinfoot.titleapi.TitleAPI;
 import de.emilio.ctf.commands.CommandjoinTeam;
 import org.bukkit.*;
@@ -35,6 +34,8 @@ public class MyListener implements Listener {
     private Game game;
     private JavaPlugin plugin;
     private HashMap<String, ItemStack> helmMap= new HashMap<String, ItemStack>();
+    private String[] SUPERDEATHMESSAGESTEIL1 = {"wude von ","wurde von ", "hat von "," unterschätzte","", " wurde von "};
+    private String[] SUPERDEATHMESSAGESTEIL2 = {" mies in den Arsch gebuttert", " aus der Welt gejeetet", "mies aufs maul bekommen","","dababyt !! LESSSS GO"};
     //helmMap.put(player.getName(),ItemStack);
     //helmMap.get(player.getName());
     //helmMap.remove(player.getName());
@@ -122,6 +123,26 @@ public class MyListener implements Listener {
     }
     @EventHandler
     public void onDeath(PlayerDeathEvent event){
+
+        if(event.getEntity().getKiller() != null) {
+            String killer = event.getEntity().getKiller().getName();
+            String killed = event.getEntity().getName();
+            if (game.getTeam(killer)!=null){
+                int index= (int) (Math.random() * (SUPERDEATHMESSAGESTEIL1.length -1));
+
+                if (game.getTeam(killed) != null && game.getTeam(killer) != null){
+                    event.setDeathMessage( killed +  SUPERDEATHMESSAGESTEIL1[index] + game.getTeam(killer).getColor()+killer+ChatColor.WHITE+SUPERDEATHMESSAGESTEIL2[index]);
+                }else if (game.getTeam(killer)!= null && game.getTeam(killed) == null){
+                    event.setDeathMessage( killed + SUPERDEATHMESSAGESTEIL1[index] + game.getTeam(killer).getColor()+killer+ChatColor.WHITE+SUPERDEATHMESSAGESTEIL2[index]);
+                }else if (game.getTeam(killer)== null  && game.getTeam(killed) !=null){
+                    event.setDeathMessage( game.getTeam(killed).getColor() +killed+ChatColor.WHITE+ SUPERDEATHMESSAGESTEIL1[index] +killer+SUPERDEATHMESSAGESTEIL2[index]);
+                }else {
+                    event.setDeathMessage(killed+SUPERDEATHMESSAGESTEIL1[index]+killer+SUPERDEATHMESSAGESTEIL2[index]);
+                }
+            }
+
+        }
+
         if(event.getEntity().getInventory().getHelmet() == null) {return;};
         if(event.getEntity().getInventory().getHelmet().getType()==Material.BANNER){
             if(game.teams[Integer.parseInt(event.getEntity().getInventory().getHelmet().getItemMeta().getDisplayName())]!=null){
