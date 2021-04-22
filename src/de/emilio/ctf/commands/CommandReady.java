@@ -58,7 +58,7 @@ public class CommandReady implements CommandExecutor {
                  Bukkit.getOnlinePlayers()) {
                 TitleAPI.sendTitle(online,2,60,4,"PVP in 30 Seconds","");
             }
-            new Countdown(5, 0, 1, true, game).runTaskTimer(plugin, 500, 20);
+            new Countdown(10, 0, 1, true, game).runTaskTimer(plugin, 400, 20);
         }
         return true;
 

@@ -8,7 +8,6 @@ import org.bukkit.enchantments.Enchantment;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.GameMode;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -170,16 +169,16 @@ public class MyListener implements Listener {
                 BossBarAPI.Color.BLUE, // Color of the bar
                 BossBarAPI.Style.NOTCHED_20, // Bar style
                 1.0f); // Timeout-interval
-        //BossBar bossBar1 = BossBarAPI.addBar(player, new TextComponent("Respawn"),BossBarAPI.Color.BLUE, BossBarAPI.Style.NOTCHED_20,1.0f,20,2);
-        //bossBar.setProgress(-1.0f);
-        //System.out.println("BITTE SEI 1 DU HUSO:"+bossBar.getProgress());
         game.Barmap.put(player.getName(),bossBar);
+        if((game.getTeam(player)!= null) && (game.getTeam(player).getTeamRespawn() != null)){
+            player.teleport(game.getTeam(player).getTeamRespawn());
+        }else {
+            player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation().add(0, 2, 0));
+        }
     }
     @EventHandler
     public void onMove(PlayerMoveEvent event){
         if(game.Timeoutmap.containsKey(event.getPlayer().getName())){
-            Location from = event.getFrom();
-            Location to = event.getTo();
             if( event.getTo().getBlockX() != event.getFrom().getBlockX() || event.getTo().getBlockY() != event.getFrom().getBlockY() || event.getTo().getBlockZ() != event.getFrom().getBlockZ()){
                 event.setCancelled(true);
             }
@@ -198,7 +197,7 @@ public class MyListener implements Listener {
             if(team.getFlagCords()!=null&&((int)event.getTo().getX())==((int)team.getFlagCords().getX())&&((int)event.getTo().getY())==((int)team.getFlagCords().getY())&&((int)event.getTo().getZ())==((int)team.getFlagCords().getZ())) {
                 if (team.getId() != game.getTeam(event.getPlayer()).getId()) {
                     ItemStack flag = new ItemStack(Material.BANNER, 1, (short) (15-(team.getColordata())));
-                    notifyPlayers(team.getName());
+                    notifyPlayers("Team "+team.getName()+" Flag was taken");
                     ItemMeta meta = flag.getItemMeta();
                     meta.setDisplayName(team.getId()+"");
                     flag.setItemMeta(meta);
@@ -209,13 +208,14 @@ public class MyListener implements Listener {
                     team.setFlagCords(null);
                 }
             } if(team.getTeamRespawn()!=null&&team==game.getTeam(event.getPlayer())&&((int)event.getTo().getX())==((int)team.getTeamRespawn().getX())&&((int)event.getTo().getY())==((int)team.getTeamRespawn().getY())&&((int)event.getTo().getZ())==((int)team.getTeamRespawn().getZ())){
-                    System.out.println("DU BRINGST DIE FLAGGE ZURÜCK");
+                    //System.out.println("DU BRINGST DIE FLAGGE ZURÜCK");
                     ItemStack flagge;
-                    if(event.getPlayer().getInventory().getHelmet() == null) {return;};
+                    if(event.getPlayer().getInventory().getHelmet() == null) {return;}
                     if(event.getPlayer().getInventory().getHelmet().getType()==Material.BANNER){
                         flagge =event.getPlayer().getInventory().getHelmet();
                         ItemStack air = new ItemStack(Material.AIR,1);
                         team.addScore();
+                        notifyPlayers("Team "+ game.getTeam(event.getPlayer()).getName()+" scored");
                         event.getPlayer().sendMessage("SUPER KLASSE PUNKT");
                         event.getPlayer().getInventory().setHelmet(air);
                         Team pTeam = game.teams[Integer.parseInt(flagge.getItemMeta().getDisplayName())];
@@ -225,20 +225,23 @@ public class MyListener implements Listener {
                         banner.setBaseColor(DyeColor.getByDyeData((byte) (15- pTeam.getColordata())));
                         banner.update();
                         if(team.getScore()==game.pointstowin){
-
+                            notifyPlayers(team.getName()+ " has won");
+                            game.started = false;
+                            game.pvp = false;
                         }
                     }
 
             }
         }
     }
-    private void notifyPlayers(String name){
+    private void notifyPlayers(String message){
         for (Player player:
              Bukkit.getOnlinePlayers()) {
-            TitleAPI.sendTitle(player,2,15,2,"§cYour Flag was taken","");
+            TitleAPI.sendTitle(player,2,25,2,message,"");
         }
     }
     private void giveFlag(Player player, ItemStack flag, String name){
+        TitleAPI.sendTitle(player, 2,25,2,"You have the Flag","");
         if(game.useHelmet){
             if(player.getInventory().getHelmet()!=null){
                 ItemStack helmet = player.getInventory().getHelmet();

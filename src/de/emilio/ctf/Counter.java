@@ -36,14 +36,7 @@ public class Counter extends BukkitRunnable {
                     game.Barmap.remove(online.getName());
                     game.Timeoutmap.remove(online.getName());
                     System.out.println(game.getTeam(online).getTeamRespawn());
-                    online.sendMessage(String.valueOf(game.getTeam(online)!= null));
-                    online.sendMessage(String.valueOf(game.getTeam(online).getTeamRespawn() != null));
-                    if((game.getTeam(online)!= null) && (game.getTeam(online).getTeamRespawn() != null)){
-                        online.sendMessage("reached inside!!!");
-                        online.teleport(game.getTeam(online).getTeamRespawn());
-                    }else {
-                        online.teleport(Bukkit.getWorlds().get(0).getSpawnLocation().add(0, 2, 0));
-                    }
+
                     online.setGameMode(GameMode.SURVIVAL);
                 }
             }
