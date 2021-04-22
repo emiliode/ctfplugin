@@ -27,7 +27,7 @@ public class CommandSetRespawn implements CommandExecutor {
             player.sendMessage("Du musst anführen um diesen Command auszuführen");
             return true;
         }
-        System.out.println(args[0]);
+        //System.out.println(args[0]);
         if (game.getTeam(player) == null){
             sender.sendMessage("Du hast kein team");
             return true;

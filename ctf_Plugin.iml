@@ -16,8 +16,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="BossBarAPI" level="project" />
     <orderEntry type="library" name="TitleAPI" level="project" />
-    <orderEntry type="library" name="spigot" level="project" />
+    <orderEntry type="library" exported="" name="spigot" level="project" />
+    <orderEntry type="library" exported="" name="BossBarAPI" level="project" />
   </component>
 </module>

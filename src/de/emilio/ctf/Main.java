@@ -24,7 +24,7 @@ public class Main extends JavaPlugin  {
         getConfig().set("variables.debug",true);
         saveConfig();
         game.pointstowin = getConfig().getInt("variables.pointsTowin");
-        System.out.println(game.pointstowin);
+        //System.out.println(game.pointstowin);
         game.useHelmet = getConfig().getBoolean("variables.useHelmet");
         this.getServer().getPluginManager().registerEvents(new MyListener(game, this),this);
         this.getCommand("hello").setExecutor(new CommandHello(game));

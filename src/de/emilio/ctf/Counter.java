@@ -21,7 +21,7 @@ public class Counter extends BukkitRunnable {
             if(game.Timeoutmap.containsKey(online.getName())){
                 long remaining = game.Timeoutmap.get(online.getName())-seconds;
                 BossBar bar =game.Barmap.get(online.getName());
-                System.out.println(remaining);
+                //System.out.println(remaining);
                 if (remaining>10){
                     bar.setMessage(ChatColor.BLUE+"Respwan in: "+ChatColor.BOLD+String.valueOf((int) remaining).substring(0,2));
 
@@ -35,7 +35,7 @@ public class Counter extends BukkitRunnable {
                     BossBarAPI.removeAllBars(online);
                     game.Barmap.remove(online.getName());
                     game.Timeoutmap.remove(online.getName());
-                    System.out.println(game.getTeam(online).getTeamRespawn());
+                    //System.out.println(game.getTeam(online).getTeamRespawn());
 
                     online.setGameMode(GameMode.SURVIVAL);
 

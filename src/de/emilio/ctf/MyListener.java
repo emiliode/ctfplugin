@@ -149,7 +149,7 @@ public class MyListener implements Listener {
 
         event.setCancelled(true);
         Player player = (Player) event.getWhoClicked();
-        System.out.println(game.teams.length);
+        //System.out.println(game.teams.length);
         for (int i = 0; i < game.teams.length; i++) {
             if (event.getSlot() ==i){
                 game.addPlayer(player, i);

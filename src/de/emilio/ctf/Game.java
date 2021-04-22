@@ -57,7 +57,7 @@ public class Game {
     public Team getTeam(String name){
         if (teams == null){return null;}
         for(Team team: teams){
-            System.out.println(team.getName());
+            //System.out.println(team.getName());
           if (team.getName().equalsIgnoreCase(name)){
               return team;
           }
