@@ -38,6 +38,7 @@ public class Counter extends BukkitRunnable {
                     System.out.println(game.getTeam(online).getTeamRespawn());
 
                     online.setGameMode(GameMode.SURVIVAL);
+
                 }
             }
         }

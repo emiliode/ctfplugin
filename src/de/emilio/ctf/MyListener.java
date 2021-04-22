@@ -104,10 +104,9 @@ public class MyListener implements Listener {
                                 Banner banner = (Banner) loc.getBlock().getState();
                                 banner.setBaseColor(DyeColor.getByDyeData((byte) (15-color)));
                                 banner.update();
-                                this.cancel();
-                                Vector flagDirection = ev.getPlayer().getEyeLocation().getDirection().multiply(-1);
                                 game.teams[game.getTeam(ev.getPlayer()).getId()].setFlagCords(loc);
                                 game.teams[game.getTeam(ev.getPlayer()).getId()].setTeamRespawn(loc);
+                                this.cancel();
 
                             }
                             yolo[0]++;
@@ -132,7 +131,10 @@ public class MyListener implements Listener {
             Banner banner = (Banner) event.getEntity().getLocation().getBlock().getState();
             banner.setBaseColor(DyeColor.getByDyeData((byte) (event.getEntity().getInventory().getHelmet().getDurability())));
             banner.update();
-            event.getEntity().getInventory().setHelmet(helmMap.get(event.getEntity()));
+            if(helmMap.get(event.getEntity().getName())!=null) {
+                event.getEntity().getInventory().setHelmet(helmMap.get(event.getEntity().getName()));
+                helmMap.remove(event.getEntity().getName());
+            }
 
 
         }
@@ -196,20 +198,23 @@ public class MyListener implements Listener {
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event){
         Player player = event.getPlayer();
-        game.Timeoutmap.put(player.getName(),( System.currentTimeMillis()/1000+ 10));
-        player.setGameMode(GameMode.SPECTATOR);
-
         if((game.getTeam(player)!= null) && (game.getTeam(player).getTeamRespawn() != null)){
-             event.setRespawnLocation(game.getTeam(player).getTeamRespawn());
+            event.setRespawnLocation(game.getTeam(player).getTeamRespawn());
         }else {
-           event.setRespawnLocation(Bukkit.getWorlds().get(0).getSpawnLocation().add(0, 2, 0));
+            event.setRespawnLocation(Bukkit.getWorlds().get(0).getSpawnLocation().add(0, 2, 0));
         }
-        BossBar bossBar = BossBarAPI.addBar(player, // The receiver of the BossBar
-                new TextComponent("Reentering  !"), // Displayed message
-                BossBarAPI.Color.BLUE, // Color of the bar
-                BossBarAPI.Style.NOTCHED_20, // Bar style
-                1.0f); // Timeout-interval
-        game.Barmap.put(player.getName(),bossBar);
+        if(game.pvp) {
+            game.Timeoutmap.put(player.getName(), (System.currentTimeMillis() / 1000 + 10));
+            player.setGameMode(GameMode.SPECTATOR);
+
+
+            BossBar bossBar = BossBarAPI.addBar(player, // The receiver of the BossBar
+                    new TextComponent("Reentering  !"), // Displayed message
+                    BossBarAPI.Color.BLUE, // Color of the bar
+                    BossBarAPI.Style.NOTCHED_20, // Bar style
+                    1.0f); // Timeout-interval
+            game.Barmap.put(player.getName(), bossBar);
+        }
     }
     @EventHandler
     public void onMove(PlayerMoveEvent event){
@@ -219,6 +224,7 @@ public class MyListener implements Listener {
             }
            event.getPlayer().sendMessage(ChatColor.RED+"You are not allowed to move");
         }
+        if(game.pvp){
         if(game.teams == null){
             return;}
         //System.out.println("Checking for flag");
@@ -242,36 +248,39 @@ public class MyListener implements Listener {
                     team.getFlagCords().getBlock().setType(Material.AIR);
                     team.setFlagCords(null);
                 }
-            } if(team.getTeamRespawn()!=null&&team==game.getTeam(event.getPlayer())&&((int)event.getTo().getX())==((int)team.getTeamRespawn().getX())&&((int)event.getTo().getY())==((int)team.getTeamRespawn().getY())&&((int)event.getTo().getZ())==((int)team.getTeamRespawn().getZ())){
-                    //System.out.println("DU BRINGST DIE FLAGGE ZURÜCK");
-                    ItemStack flagge;
-                    if(event.getPlayer().getInventory().getHelmet() == null) {return;}
-                    if(event.getPlayer().getInventory().getHelmet().getType()==Material.BANNER){
-                        flagge =event.getPlayer().getInventory().getHelmet();
-                        ItemStack air = new ItemStack(Material.AIR,1);
-                        team.addScore();
-                        notifyPlayers("Team "+ game.getTeam(event.getPlayer()).getName()+" scored");
-                        //event.getPlayer().sendMessage("SUPER KLASSE PUNKT");
-                        game.updateBoard();
-                        event.getPlayer().getInventory().setHelmet(helmMap.get(event.getPlayer().getName()));
-                        Team pTeam = game.teams[Integer.parseInt(flagge.getItemMeta().getDisplayName())];
-                        pTeam.getTeamRespawn().getBlock().setType(Material.STANDING_BANNER);
-                        pTeam.setFlagCords(pTeam.getTeamRespawn());
-                        pTeam.setFlaggenträger(null);
-                        Banner banner = (Banner) pTeam.getTeamRespawn().getBlock().getState();
-                        banner.setBaseColor(DyeColor.getByDyeData((byte) (15- pTeam.getColordata())));
-                        banner.update();
-                        if(team.getScore()==game.pointstowin){
-                            notifyPlayers(team.getName()+ " has won");
-                            game.started = false;
-                            game.pvp = false;
-                            for (Team zTeam:
-                                 game.teams) {
-                                zTeam.setScore(0);
-                            }
+            } if(team.getTeamRespawn()!=null&&team==game.getTeam(event.getPlayer())&&((int)event.getTo().getX())==((int)team.getTeamRespawn().getX())&&((int)event.getTo().getY())==((int)team.getTeamRespawn().getY())&&((int)event.getTo().getZ())==((int)team.getTeamRespawn().getZ())) {
+                //System.out.println("DU BRINGST DIE FLAGGE ZURÜCK");
+                ItemStack flagge;
+                if (event.getPlayer().getInventory().getHelmet() == null) {
+                    return;
+                }
+                if (event.getPlayer().getInventory().getHelmet().getType() == Material.BANNER) {
+                    flagge = event.getPlayer().getInventory().getHelmet();
+                    ItemStack air = new ItemStack(Material.AIR, 1);
+                    team.addScore();
+                    notifyPlayers("Team " + game.getTeam(event.getPlayer()).getName() + " scored");
+                    //event.getPlayer().sendMessage("SUPER KLASSE PUNKT");
+                    game.updateBoard();
+                    event.getPlayer().getInventory().setHelmet(helmMap.get(event.getPlayer().getName()));
+                    Team pTeam = game.teams[Integer.parseInt(flagge.getItemMeta().getDisplayName())];
+                    pTeam.getTeamRespawn().getBlock().setType(Material.STANDING_BANNER);
+                    pTeam.setFlagCords(pTeam.getTeamRespawn());
+                    pTeam.setFlaggenträger(null);
+                    Banner banner = (Banner) pTeam.getTeamRespawn().getBlock().getState();
+                    banner.setBaseColor(DyeColor.getByDyeData((byte) (15 - pTeam.getColordata())));
+                    banner.update();
+                    if (team.getScore() >= game.pointstowin) {
+                        notifyPlayers(team.getName() + " has won");
+                        game.started = false;
+                        game.pvp = false;
+                        for (Team zTeam :
+                                game.teams) {
+                            zTeam.setReady(false);
+                            zTeam.setScore(0);
                         }
                     }
-
+                }
+            }
             }
         }
     }
