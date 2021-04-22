@@ -51,7 +51,7 @@ public class CommandReady implements CommandExecutor {
                 count++;
             }
         }if (count < game.teams.length) {
-            Bukkit.broadcastMessage(game.getTeam(player) + " ist ready insgesamt [" + count + "/" + game.teams.length + "]");
+            Bukkit.broadcastMessage(game.getTeam(player).getName() + " ist ready insgesamt [" + count + "/" + game.teams.length + "]");
             return true;
         }else {
             for (Player online:

@@ -27,9 +27,15 @@ import org.bukkit.util.Vector;
 import org.inventivetalent.bossbar.BossBar;
 import org.inventivetalent.bossbar.BossBarAPI;
 
+import java.util.HashMap;
+
 public class MyListener implements Listener {
     private Game game;
     private JavaPlugin plugin;
+    private HashMap<String, ItemStack> helmMap= new HashMap<String, ItemStack>();
+    //helmMap.put(player.getName,ItemStack);
+    //helmMap.get(player.getName);
+    //helmMap.remover(player.getName);
     public MyListener(Game game, JavaPlugin plugin){
         this.game = game;
         this.plugin=plugin;

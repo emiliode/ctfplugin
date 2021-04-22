@@ -26,12 +26,11 @@ public class CommandStart implements CommandExecutor {
         if(game.teams == null){
             commandSender.sendMessage(ChatColor.RED+"Create some teams first !");
         }
-        game.started = true;
-
         for (Team team:
                 game.teams) {
             if(team.getTeamRespawn() == null){
                 commandSender.sendMessage("You must set the team respawns first");
+                return true;
             }
             for (String playername:
                  team.getPlayers()) {
@@ -39,6 +38,7 @@ public class CommandStart implements CommandExecutor {
                 player.teleport(team.getTeamRespawn());
             }
         }
+        game.started = true;
         return true;
     }
 }
