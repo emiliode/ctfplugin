@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.inventivetalent.bossbar.BossBar;
 import org.inventivetalent.bossbar.BossBarAPI;
@@ -27,6 +29,7 @@ public class Game {
     public boolean started;
     public boolean useHelmet;
     public boolean unbreaking;
+    public Scoreboard board;
 
     private JavaPlugin plugin;
     public Game(JavaPlugin plugin){
@@ -34,12 +37,7 @@ public class Game {
         System.out.println("Game created");
 
     }
-    public void updateScores(int[] scores){
-        for (Player player:Bukkit.getOnlinePlayers()){
-           // MyListener.createBoard(player);
-        }
 
-    }
     public void printTeams(){
         for (Team team:teams
              ) {
@@ -85,6 +83,21 @@ public class Game {
         for (Player player:
              Bukkit.getOnlinePlayers()) {
             TitleAPI.sendTitle(player,0,40,2,"ATTACK !!!","");
+        }
+    }
+
+    public void updateBoard() {
+        this.board = Bukkit.getScoreboardManager().getNewScoreboard();
+        Objective objective = this.board.registerNewObjective("Points", "dummy");
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        objective.setDisplayName("Points");
+        for (Team team :
+                teams) {
+            objective.getScore(team.getColor()+team.getName()).setScore(team.getScore());
+        }
+        for (Player online :
+                Bukkit.getOnlinePlayers()) {
+            online.setScoreboard(this.board);
         }
     }
 }

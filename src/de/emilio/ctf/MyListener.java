@@ -245,6 +245,7 @@ public class MyListener implements Listener {
                         team.addScore();
                         notifyPlayers("Team "+ game.getTeam(event.getPlayer()).getName()+" scored");
                         event.getPlayer().sendMessage("SUPER KLASSE PUNKT");
+                        game.updateBoard();
                         event.getPlayer().getInventory().setHelmet(air);
                         Team pTeam = game.teams[Integer.parseInt(flagge.getItemMeta().getDisplayName())];
                         pTeam.getTeamRespawn().getBlock().setType(Material.STANDING_BANNER);

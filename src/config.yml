@@ -1,4 +1,4 @@
 variables:
   debug: false
-  useHelmet: false
+  useHelmet: true
   pointsTowin: 3
