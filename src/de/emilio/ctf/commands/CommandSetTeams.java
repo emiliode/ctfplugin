@@ -24,9 +24,9 @@ import java.util.ArrayList;
 
 public class CommandSetTeams implements CommandExecutor {
     Game game;
-    final private ChatColor[] colors = {ChatColor.BLUE, ChatColor.RED , ChatColor.LIGHT_PURPLE ,ChatColor.WHITE};
-    final private short[] colorcodes = {11,14,6,0};
-    final private String[] names = {"Blau","Rot","Pink","Weiß"};
+    final private ChatColor[] colors = {ChatColor.BLUE, ChatColor.RED , ChatColor.GREEN ,ChatColor.WHITE};
+    final private short[] colorcodes = {11,14,5,0};
+    final private String[] names = {"Blau","Rot","Grün","Weiß"};
     public  CommandSetTeams(Game game){
         this.game = game;
     }

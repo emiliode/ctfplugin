@@ -33,8 +33,12 @@ public class CommandjoinTeam implements CommandExecutor {
             return true;
         }
 
+        if(!game.pvp){
+            openTeamInv(player, this.game);
+        }else{
+            player.sendMessage(ChatColor.RED+"Cannot change Team during fight");
+        }
 
-        openTeamInv(player, this.game);
 
         return true;
     }

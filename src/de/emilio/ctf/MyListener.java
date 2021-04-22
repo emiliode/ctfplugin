@@ -1,5 +1,6 @@
 package de.emilio.ctf;
 
+import com.sun.javafx.scene.traversal.Direction;
 import com.connorlinfoot.titleapi.TitleAPI;
 import de.emilio.ctf.commands.CommandjoinTeam;
 import org.bukkit.*;
@@ -34,9 +35,9 @@ public class MyListener implements Listener {
     private Game game;
     private JavaPlugin plugin;
     private HashMap<String, ItemStack> helmMap= new HashMap<String, ItemStack>();
-    //helmMap.put(player.getName,ItemStack);
-    //helmMap.get(player.getName);
-    //helmMap.remover(player.getName);
+    //helmMap.put(player.getName(),ItemStack);
+    //helmMap.get(player.getName());
+    //helmMap.remove(player.getName());
     public MyListener(Game game, JavaPlugin plugin){
         this.game = game;
         this.plugin=plugin;
@@ -51,7 +52,7 @@ public class MyListener implements Listener {
     @EventHandler
     public void onItemClick(PlayerInteractEvent ev) {
         try {
-            if (game.unbreaking){
+            if (game.pvp&&game.unbreaking){
                 if (ev.getItem() != null) {
                     if (isTool(ev.getItem().getType()) || ev.getItem().getType() == Material.FISHING_ROD || ev.getItem().getType() == Material.FLINT_AND_STEEL){
                         ev.getItem().setDurability((short) 1);
@@ -67,6 +68,13 @@ public class MyListener implements Listener {
                 item.setItemMeta(meta);
 
                 if (item.getEnchantmentLevel(Enchantment.DAMAGE_ARTHROPODS) == 10) {
+                    if(game.getTeam(ev.getPlayer())==null){
+                        item.setAmount(1);
+                        ev.getPlayer().getInventory().addItem(item);
+                        ev.getPlayer().sendMessage(ChatColor.RED+"Enter a team with /join before using this block");
+                        ev.setCancelled(true);
+                        return;
+                    }
                     byte color=(byte)game.getTeam(ev.getPlayer()).getColordata();
                     ev.getClickedBlock().setType(Material.STAINED_GLASS);
                     ev.getClickedBlock().setData(color);
@@ -124,8 +132,7 @@ public class MyListener implements Listener {
             Banner banner = (Banner) event.getEntity().getLocation().getBlock().getState();
             banner.setBaseColor(DyeColor.getByDyeData((byte) (event.getEntity().getInventory().getHelmet().getDurability())));
             banner.update();
-            ItemStack air = new ItemStack(Material.AIR,1);
-            event.getEntity().getInventory().setHelmet(air);
+            event.getEntity().getInventory().setHelmet(helmMap.get(event.getEntity()));
 
 
         }
@@ -165,7 +172,7 @@ public class MyListener implements Listener {
             }
             Player whoWasHit = (Player) e.getEntity();
             Player whoHit = (Player) e.getDamager();
-            if(game.unbreaking) {
+            if(game.pvp&&game.unbreaking) {
                     whoHit.getItemInHand().setDurability((short) 1);
             }
             else if (e.getEntity() instanceof Player) {
@@ -189,7 +196,7 @@ public class MyListener implements Listener {
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event){
         Player player = event.getPlayer();
-        game.Timeoutmap.put(player.getName(),( System.currentTimeMillis()/1000+ 20));
+        game.Timeoutmap.put(player.getName(),( System.currentTimeMillis()/1000+ 10));
         player.setGameMode(GameMode.SPECTATOR);
 
         if((game.getTeam(player)!= null) && (game.getTeam(player).getTeamRespawn() != null)){
@@ -244,12 +251,13 @@ public class MyListener implements Listener {
                         ItemStack air = new ItemStack(Material.AIR,1);
                         team.addScore();
                         notifyPlayers("Team "+ game.getTeam(event.getPlayer()).getName()+" scored");
-                        event.getPlayer().sendMessage("SUPER KLASSE PUNKT");
+                        //event.getPlayer().sendMessage("SUPER KLASSE PUNKT");
                         game.updateBoard();
-                        event.getPlayer().getInventory().setHelmet(air);
+                        event.getPlayer().getInventory().setHelmet(helmMap.get(event.getPlayer().getName()));
                         Team pTeam = game.teams[Integer.parseInt(flagge.getItemMeta().getDisplayName())];
                         pTeam.getTeamRespawn().getBlock().setType(Material.STANDING_BANNER);
                         pTeam.setFlagCords(pTeam.getTeamRespawn());
+                        pTeam.setFlaggenträger(null);
                         Banner banner = (Banner) pTeam.getTeamRespawn().getBlock().getState();
                         banner.setBaseColor(DyeColor.getByDyeData((byte) (15- pTeam.getColordata())));
                         banner.update();
@@ -257,6 +265,10 @@ public class MyListener implements Listener {
                             notifyPlayers(team.getName()+ " has won");
                             game.started = false;
                             game.pvp = false;
+                            for (Team zTeam:
+                                 game.teams) {
+                                zTeam.setScore(0);
+                            }
                         }
                     }
 
@@ -273,8 +285,9 @@ public class MyListener implements Listener {
         TitleAPI.sendTitle(player, 2,25,2,"You have the Flag","");
         if(game.useHelmet){
             if(player.getInventory().getHelmet()!=null){
-                ItemStack helmet = player.getInventory().getHelmet();
-                player.getInventory().addItem(helmet);
+                helmMap.put(player.getName(), player.getInventory().getHelmet());
+            }else{
+                helmMap.put(player.getName(), new ItemStack(Material.AIR, 1));
             }
             player.getInventory().setHelmet(flag);
 
@@ -296,7 +309,7 @@ public class MyListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void noWeaponBreakDamage(EntityShootBowEvent event) {
         try {
-            if (game.unbreaking) {
+            if (game.pvp&&game.unbreaking) {
                 if (event.getEntity() instanceof Player) event.getBow().setDurability((short) 1);
             }
         } catch (Exception ex) {

@@ -2,3 +2,4 @@ variables:
   debug: false
   useHelmet: true
   pointsTowin: 3
+  unbreaking : false

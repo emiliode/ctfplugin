@@ -42,6 +42,9 @@ public class CommandSetRespawn implements CommandExecutor {
             sender.sendMessage("Keine gültigen Koordinaten");
             return false;
         }
+        if(game.getTeam(player).getTeamRespawn()!=null){
+            return true;
+        }
         System.out.println(Bukkit.getWorlds());
         Location loc = new Location(Bukkit.getWorlds().get(0), x,  y, z);
         game.getTeam(player).setTeamRespawn(loc);

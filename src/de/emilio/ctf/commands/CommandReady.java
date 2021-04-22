@@ -50,10 +50,9 @@ public class CommandReady implements CommandExecutor {
             if(team.isReady()){
                 count++;
             }
-        }if (count < game.teams.length) {
+        }if (count <= game.teams.length) {
             Bukkit.broadcastMessage(game.getTeam(player).getName() + " ist ready insgesamt [" + count + "/" + game.teams.length + "]");
-            return true;
-        }else {
+        }if(count==game.teams.length){
             for (Player online:
                  Bukkit.getOnlinePlayers()) {
                 TitleAPI.sendTitle(online,2,60,4,"PVP in 30 Seconds","");
