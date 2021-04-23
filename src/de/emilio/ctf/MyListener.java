@@ -143,20 +143,50 @@ public class MyListener implements Listener {
             }
 
         }
+
+
             if(game.teams[Integer.parseInt(event.getEntity().getInventory().getHelmet().getItemMeta().getDisplayName())]!=null){
                 game.teams[Integer.parseInt(event.getEntity().getInventory().getHelmet().getItemMeta().getDisplayName())].setFlagCords(event.getEntity().getLocation());
             }
-            event.getEntity().getLocation().getBlock().setType(Material.STANDING_BANNER);
-            Banner banner = (Banner) event.getEntity().getLocation().getBlock().getState();
-            banner.setBaseColor(DyeColor.getByDyeData((byte) (event.getEntity().getInventory().getHelmet().getDurability())));
-            banner.update();
+
+        int teamId = Integer.parseInt(event.getEntity().getInventory().getHelmet().getItemMeta().getDisplayName());
+        int x = game.teams[Integer.parseInt(event.getEntity().getInventory().getHelmet().getItemMeta().getDisplayName())].getColordata();
+            event.getEntity().getInventory().setHelmet(new ItemStack(Material.AIR));
+
             if(helmMap.get(event.getEntity().getName())!=null) {
                 event.getEntity().getInventory().setHelmet(helmMap.get(event.getEntity().getName()));
+
                 helmMap.remove(event.getEntity().getName());
             }
+            event.getEntity().getLocation().getBlock().setType(Material.STANDING_BANNER);
+            Banner banner = (Banner)event.getEntity().getLocation().getBlock().getState();
+            banner.setBaseColor(DyeColor.getByDyeData((byte) (15 - x)));
+            banner.update();
+            Location todesPunkt = event.getEntity().getLocation();
+            long timeInTicks = 200;
+            new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                System.out.println("kommt rein");
+                System.out.println(todesPunkt.getBlock());
+                if(todesPunkt.getBlock().getType()==Material.STANDING_BANNER){
+                    System.out.println("bitte nach paar sekunden");
+                    Location someLocation =game.teams[teamId].getTeamRespawn();
+                    someLocation.getBlock().setType(Material.STANDING_BANNER);
+                    Banner banner = (Banner)someLocation.getBlock().getState();
+                    banner.setBaseColor(DyeColor.getByDyeData((byte) (15 - game.teams[teamId].getColordata())));
+                    banner.update();
+                    someLocation.setZ(someLocation.getZ()+1);
+                    game.teams[teamId].setFlagCords(someLocation);
+                    todesPunkt.getBlock().setType(Material.AIR);
+                }
+                //The code inside will be executed in {timeInTicks} ticks.
+            }
+        }.runTaskLater(plugin, timeInTicks);
 
 
-        }
+    }
 
 
     @EventHandler
