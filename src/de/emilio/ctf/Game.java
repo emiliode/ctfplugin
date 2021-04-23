@@ -73,6 +73,7 @@ public class Game {
         for (Team team:teams
              ) {
             if(team.isInTeam(player)){
+                board.getTeam(team.getPrefix()).removeEntry(player.getName());
                 team.removePlayer(player);
             }if(teamid == team.getId()){
                 team.addPlayer(player);

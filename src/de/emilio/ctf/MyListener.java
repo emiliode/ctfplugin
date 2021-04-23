@@ -136,7 +136,7 @@ public class MyListener implements Listener {
                 int index= (int) (Math.random() * (SUPERDEATHMESSAGESTEIL1.length -1));
 
                 if (game.getTeam(killed) != null && game.getTeam(killer) != null){
-                    event.setDeathMessage( killed +  SUPERDEATHMESSAGESTEIL1[index] + game.getTeam(killer).getColor()+killer+ChatColor.WHITE+SUPERDEATHMESSAGESTEIL2[index]);
+                    event.setDeathMessage( game.getTeam(killed).getColor()+killed +ChatColor.WHITE+  SUPERDEATHMESSAGESTEIL1[index] + game.getTeam(killer).getColor()+killer+ChatColor.WHITE+SUPERDEATHMESSAGESTEIL2[index]);
                 }else if (game.getTeam(killer)!= null && game.getTeam(killed) == null){
                     event.setDeathMessage( killed + SUPERDEATHMESSAGESTEIL1[index] + game.getTeam(killer).getColor()+killer+ChatColor.WHITE+SUPERDEATHMESSAGESTEIL2[index]);
                 }else if (game.getTeam(killer)== null  && game.getTeam(killed) !=null){
@@ -205,7 +205,6 @@ public class MyListener implements Listener {
                 game.addPlayer(player, i);
                 player.setGameMode(GameMode.SURVIVAL);
                // player.setPlayerListName(game.teams[i].getColor()+player.getName());
-
                 game.board.getTeam(game.teams[i].getPrefix()).addEntry(player.getName());
             }
                 player.closeInventory();
