@@ -26,6 +26,7 @@ public class CommandSetTeams implements CommandExecutor {
     Game game;
     final private ChatColor[] colors = {ChatColor.BLUE, ChatColor.RED , ChatColor.GREEN ,ChatColor.WHITE};
     final private short[] colorcodes = {11,14,5,0};
+    final private String[] prefixes = {"§9","§4","$a","$f"};
     final private String[] names = {"Blau","Rot","Grün","Weiß"};
     public  CommandSetTeams(Game game){
         this.game = game;
@@ -52,11 +53,12 @@ public class CommandSetTeams implements CommandExecutor {
                 }
                 Team[] teams = new Team[numteams];;
                 for (int i=0; i< numteams; i++){
-                    teams[i] = new Team(colors[i], colorcodes[i],0,i,names[i] );
+                    teams[i] = new Team(colors[i], colorcodes[i],0,i,names[i] ,prefixes[i]);
                     if(sender instanceof Player){
                         Player player = (Player) sender;
                         ItemStack item = new ItemStack(Material.STAINED_GLASS,1, DyeColor.BLACK.getData());
                         ItemMeta meta = item.getItemMeta();
+
                         meta.setDisplayName( ChatColor.BLACK +"Flaggenblock");
                         meta.addEnchant(Enchantment.DAMAGE_ARTHROPODS, 10, true);
                         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -66,11 +68,20 @@ public class CommandSetTeams implements CommandExecutor {
                         meta.setLore(lore);
                         item.setItemMeta(meta);
                         player.getInventory().addItem(item);
+
                     }
                 }
                 game.teams = teams;
+                game.board = Bukkit.getScoreboardManager().getNewScoreboard();
                 game.updateBoard();
-
+                for (Team team :
+                        teams) {
+                    org.bukkit.scoreboard.Team Scoreboardteam = game.board.getTeam(team.getPrefix());
+                    if(Scoreboardteam == null) {
+                        Scoreboardteam =  game.board.registerNewTeam(team.getPrefix());
+                                Scoreboardteam.setPrefix(team.getPrefix());
+                    }
+                }
 
             }
         }else {

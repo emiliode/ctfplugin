@@ -4,6 +4,7 @@ import com.connorlinfoot.titleapi.TitleAPI;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -24,6 +25,8 @@ public class Game {
     public Team[] teams;
     public HashMap<String, Long> Timeoutmap = new HashMap<String, Long>();
     public HashMap<String, BossBar> Barmap = new HashMap<String,BossBar>();
+
+
     public int pointstowin;
     public boolean pvp;
     public boolean started;
@@ -87,10 +90,13 @@ public class Game {
     }
 
     public void updateBoard() {
-        this.board = Bukkit.getScoreboardManager().getNewScoreboard();
-        Objective objective = this.board.registerNewObjective("Points", "dummy");
-        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-        objective.setDisplayName("Points");
+        //this.board = Bukkit.getScoreboardManager().getNewScoreboard();
+        Objective objective = this.board.getObjective("Points");
+        if (objective == null) {
+            objective = this.board.registerNewObjective("Points", "dummy");
+            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+            objective.setDisplayName("Points");
+        }
         for (Team team :
                 teams) {
             objective.getScore(team.getColor()+team.getName()).setScore(team.getScore());

@@ -23,20 +23,20 @@ public class CommandReady implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
         if(!game.started){
-            sender.sendMessage("You must start the game first");
+            sender.sendMessage(ChatColor.RED +"You must start the game first");
             return true;
         }
         if (!(sender instanceof Player)) {
-            sender.sendMessage("You must be a player to do this");
+            sender.sendMessage(ChatColor.RED+"You must be a player to do this");
             return true;
         }
         Player player= (Player) sender;
         if(game.getTeam(player) == null){
-            player.sendMessage("You must have a team to set your team ready");
+            player.sendMessage(ChatColor.RED+"You must have a team to set your team ready");
             return true;
         }
         if (!(player.hasPermission("ctf.teamleader"))){
-            player.sendMessage("You must be teamleader too use this Command");
+            player.sendMessage(ChatColor.RED+"You must be teamleader too use this Command");
             return true;
         }
         if (game.getTeam(player).getFlagCords() == null){
@@ -51,7 +51,7 @@ public class CommandReady implements CommandExecutor {
                 count++;
             }
         }if (count <= game.teams.length) {
-            Bukkit.broadcastMessage(game.getTeam(player).getName() + " ist ready insgesamt [" + count + "/" + game.teams.length + "]");
+            Bukkit.broadcastMessage(game.getTeam(player).getTeamRespawn()+game.getTeam(player).getName() +ChatColor.WHITE+ " ist ready insgesamt [" + count + "/" + game.teams.length + "]");
         }if(count==game.teams.length){
             for (Player online:
                  Bukkit.getOnlinePlayers()) {
