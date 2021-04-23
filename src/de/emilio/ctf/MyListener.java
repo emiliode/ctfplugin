@@ -28,7 +28,6 @@ import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 import org.inventivetalent.bossbar.BossBar;
 import org.inventivetalent.bossbar.BossBarAPI;
-import xyz.haoshoku.nick.api.NickAPI;
 
 import java.util.HashMap;
 
