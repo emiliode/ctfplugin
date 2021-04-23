@@ -24,9 +24,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 import org.inventivetalent.bossbar.BossBar;
 import org.inventivetalent.bossbar.BossBarAPI;
+import xyz.haoshoku.nick.api.NickAPI;
 
 import java.util.HashMap;
 
@@ -34,8 +36,11 @@ public class MyListener implements Listener {
     private Game game;
     private JavaPlugin plugin;
     private HashMap<String, ItemStack> helmMap= new HashMap<String, ItemStack>();
+
     private String[] SUPERDEATHMESSAGESTEIL1 = {"wude von ","wurde von ", "hat von "," unterschätzte","", " wurde von "};
     private String[] SUPERDEATHMESSAGESTEIL2 = {" mies in den Arsch gebuttert", " aus der Welt gejeetet", "mies aufs maul bekommen","","dababyt !! LESSSS GO"};
+
+
     //helmMap.put(player.getName(),ItemStack);
     //helmMap.get(player.getName());
     //helmMap.remove(player.getName());
@@ -173,11 +178,13 @@ public class MyListener implements Listener {
             if (event.getSlot() ==i){
                 game.addPlayer(player, i);
                 player.setGameMode(GameMode.SURVIVAL);
-                player.setPlayerListName(game.teams[i].getColor()+player.getName());
+               // player.setPlayerListName(game.teams[i].getColor()+player.getName());
+
+                game.board.getTeam(game.teams[i].getPrefix()).addEntry(player.getName());
+            }
                 player.closeInventory();
                 CommandjoinTeam.openTeamInv(player,game);
             }
-        }
         if(event.getSlot() == 8){
             player.closeInventory();
 
@@ -241,11 +248,12 @@ public class MyListener implements Listener {
             if( event.getTo().getBlockX() != event.getFrom().getBlockX() || event.getTo().getBlockY() != event.getFrom().getBlockY() || event.getTo().getBlockZ() != event.getFrom().getBlockZ()){
                 event.setCancelled(true);
             }
-           event.getPlayer().sendMessage(ChatColor.DARK_RED +"You are not allowed to move");
+           //event.getPlayer().sendMessage(ChatColor.RED+"You are not allowed to move");
         }
         if(game.pvp){
         if(game.teams == null){
-            return;}
+            return;
+        }
         //System.out.println("Checking for flag");
         for (Team team:
              game.teams) {
@@ -362,5 +370,6 @@ public class MyListener implements Listener {
     private boolean isTool(Material material) {
         return material == Material.WOOD_SWORD || material == Material.STONE_SWORD || material == Material.GOLD_SWORD || material == Material.IRON_SWORD || material == Material.DIAMOND_SWORD || material == Material.WOOD_PICKAXE || material == Material.STONE_PICKAXE || material == Material.GOLD_PICKAXE || material == Material.IRON_PICKAXE || material == Material.DIAMOND_PICKAXE || material == Material.WOOD_AXE || material == Material.STONE_AXE || material == Material.GOLD_AXE || material == Material.IRON_AXE || material == Material.DIAMOND_AXE || material == Material.WOOD_SPADE || material == Material.STONE_SPADE || material == Material.GOLD_SPADE || material == Material.IRON_SPADE || material == Material.DIAMOND_SPADE || material == Material.WOOD_HOE || material == Material.STONE_HOE || material == Material.GOLD_HOE || material == Material.IRON_HOE || material == Material.DIAMOND_HOE;
     }
+
 
 }

@@ -16,11 +16,14 @@ public class Team {
     private int id;
     private Location flagCords= null;
     private Location teamRespawn = null;
+    private Location middleCord = null;
     private String name;
     private ArrayList<String> players;
     private String Flaggenträger;
+    private String prefix;
     private boolean ready =false;
-    public Team(ChatColor color , short colorcode,int score, int id, String name){
+    public Team(ChatColor color , short colorcode,int score, int id, String name, String prefix){
+        this.prefix = prefix;
         this.color = color;
         this.colorData = colorcode;
         this.setScore(score);
@@ -113,5 +116,20 @@ public class Team {
     }
     public void setReady(boolean ready){
         this.ready = ready;
+    }
+
+    public void setmiddleCord(Location loc) {
+        this.middleCord=loc;
+    }
+    public Location getmiddleCord(){
+        return middleCord;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 }

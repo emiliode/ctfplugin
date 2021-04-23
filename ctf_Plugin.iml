@@ -19,5 +19,6 @@
     <orderEntry type="library" name="TitleAPI" level="project" />
     <orderEntry type="library" exported="" name="spigot" level="project" />
     <orderEntry type="library" exported="" name="BossBarAPI" level="project" />
+    <orderEntry type="library" exported="" name="NickAPI" level="project" />
   </component>
 </module>

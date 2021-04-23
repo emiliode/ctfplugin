@@ -36,7 +36,15 @@ public class Counter extends BukkitRunnable {
                     game.Barmap.remove(online.getName());
                     game.Timeoutmap.remove(online.getName());
                     //System.out.println(game.getTeam(online).getTeamRespawn());
-
+                    if(game.getTeam(online)!= null ) {
+                        if(game.getTeam(online).getTeamRespawn()!= null) {
+                            online.teleport(game.getTeam(online).getTeamRespawn());
+                        }else{
+                            online.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
+                        }
+                    }else {
+                        online.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
+                    }
                     online.setGameMode(GameMode.SURVIVAL);
 
                 }
