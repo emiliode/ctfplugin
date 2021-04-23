@@ -32,6 +32,7 @@ public class Game {
     public boolean started;
     public boolean useHelmet;
     public boolean unbreaking;
+    public long flagResetTime;
     public Scoreboard board;
 
     private JavaPlugin plugin;

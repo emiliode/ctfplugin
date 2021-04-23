@@ -3,3 +3,4 @@ variables:
   useHelmet: true
   pointsTowin: 3
   unbreaking : false
+  flagResetTime: 200 #reset Time in seconds*20

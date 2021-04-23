@@ -172,10 +172,7 @@ public class MyListener implements Listener {
 
             @Override
             public void run() {
-                System.out.println("kommt rein");
-                System.out.println(todesPunkt.getBlock());
                 if(todesPunkt.getBlock().getType()==Material.STANDING_BANNER){
-                    System.out.println("bitte nach paar sekunden");
                     Location someLocation =game.teams[teamId].getTeamRespawn();
                     someLocation.getBlock().setType(Material.STANDING_BANNER);
                     Banner banner = (Banner)someLocation.getBlock().getState();

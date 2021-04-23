@@ -51,7 +51,7 @@ public class CommandReady implements CommandExecutor {
                 count++;
             }
         }if (count <= game.teams.length) {
-            Bukkit.broadcastMessage(game.getTeam(player).getTeamRespawn()+game.getTeam(player).getName() +ChatColor.WHITE+ " ist ready insgesamt [" + count + "/" + game.teams.length + "]");
+            Bukkit.broadcastMessage(game.getTeam(player).getName() +ChatColor.WHITE+ " ist ready insgesamt [" + count + "/" + game.teams.length + "]");
         }if(count==game.teams.length){
             for (Player online:
                  Bukkit.getOnlinePlayers()) {
