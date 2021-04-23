@@ -99,15 +99,16 @@ public class MyListener implements Listener {
 
                             if (yolo[0] == 8) {
                                 loc.setX(loc.getX() - 1);
-                                loc.setZ((loc.getZ() + 1));
                                 loc.setY(loc.getY() + 1);
+                                loc.setZ(loc.getZ() + 1);
                                 loc.getBlock().setType(Material.STANDING_BANNER);
                                 Banner banner = (Banner) loc.getBlock().getState();
                                 banner.setBaseColor(DyeColor.getByDyeData((byte) (15-color)));
                                 banner.update();
+                                loc.setZ(loc.getZ() + 1);
+                                this.cancel();
                                 game.teams[game.getTeam(ev.getPlayer()).getId()].setFlagCords(loc);
                                 game.teams[game.getTeam(ev.getPlayer()).getId()].setTeamRespawn(loc);
-                                this.cancel();
 
                             }
                             yolo[0]++;
@@ -142,9 +143,6 @@ public class MyListener implements Listener {
             }
 
         }
-
-        if(event.getEntity().getInventory().getHelmet() == null) {return;};
-        if(event.getEntity().getInventory().getHelmet().getType()==Material.BANNER){
             if(game.teams[Integer.parseInt(event.getEntity().getInventory().getHelmet().getItemMeta().getDisplayName())]!=null){
                 game.teams[Integer.parseInt(event.getEntity().getInventory().getHelmet().getItemMeta().getDisplayName())].setFlagCords(event.getEntity().getLocation());
             }
@@ -160,7 +158,7 @@ public class MyListener implements Listener {
 
         }
 
-    }
+
     @EventHandler
     public void onClick(InventoryClickEvent event){
         if(!event.getInventory().getTitle().equals("Teamauswahl")){return;}
@@ -243,7 +241,7 @@ public class MyListener implements Listener {
             if( event.getTo().getBlockX() != event.getFrom().getBlockX() || event.getTo().getBlockY() != event.getFrom().getBlockY() || event.getTo().getBlockZ() != event.getFrom().getBlockZ()){
                 event.setCancelled(true);
             }
-           event.getPlayer().sendMessage(ChatColor.RED+"You are not allowed to move");
+           event.getPlayer().sendMessage(ChatColor.DARK_RED +"You are not allowed to move");
         }
         if(game.pvp){
         if(game.teams == null){
@@ -266,7 +264,9 @@ public class MyListener implements Listener {
                     giveFlag(event.getPlayer(),flag, team.getName());
                     showBoards(team);
                     team.setFlaggenträger(event.getPlayer().getName());
-                    team.getFlagCords().getBlock().setType(Material.AIR);
+                    Location someLocation =team.getFlagCords();
+                    someLocation.setZ(someLocation.getZ()-1);
+                    event.getTo().getBlock().setType(Material.AIR);
                     team.setFlagCords(null);
                 }
             } if(team.getTeamRespawn()!=null&&team==game.getTeam(event.getPlayer())&&((int)event.getTo().getX())==((int)team.getTeamRespawn().getX())&&((int)event.getTo().getY())==((int)team.getTeamRespawn().getY())&&((int)event.getTo().getZ())==((int)team.getTeamRespawn().getZ())) {
@@ -277,19 +277,20 @@ public class MyListener implements Listener {
                 }
                 if (event.getPlayer().getInventory().getHelmet().getType() == Material.BANNER) {
                     flagge = event.getPlayer().getInventory().getHelmet();
-                    ItemStack air = new ItemStack(Material.AIR, 1);
                     team.addScore();
                     notifyPlayers("Team " + game.getTeam(event.getPlayer()).getName() + " scored");
                     //event.getPlayer().sendMessage("SUPER KLASSE PUNKT");
                     game.updateBoard();
                     event.getPlayer().getInventory().setHelmet(helmMap.get(event.getPlayer().getName()));
                     Team pTeam = game.teams[Integer.parseInt(flagge.getItemMeta().getDisplayName())];
-                    pTeam.getTeamRespawn().getBlock().setType(Material.STANDING_BANNER);
-                    pTeam.setFlagCords(pTeam.getTeamRespawn());
-                    pTeam.setFlaggenträger(null);
-                    Banner banner = (Banner) pTeam.getTeamRespawn().getBlock().getState();
+                    Location someLocation =pTeam.getTeamRespawn();
+                    someLocation.getBlock().setType(Material.STANDING_BANNER);
+                    Banner banner = (Banner)someLocation.getBlock().getState();
                     banner.setBaseColor(DyeColor.getByDyeData((byte) (15 - pTeam.getColordata())));
                     banner.update();
+                    someLocation.setZ(someLocation.getZ()+1);
+                    pTeam.setFlagCords(someLocation);
+                    pTeam.setFlaggenträger(null);
                     if (team.getScore() >= game.pointstowin) {
                         notifyPlayers(team.getName() + " has won");
                         game.started = false;
