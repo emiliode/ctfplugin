@@ -43,8 +43,8 @@ public class MyListener implements Listener {
     //helmMap.put(player.getName(),ItemStack);
     //helmMap.get(player.getName());
     //helmMap.remove(player.getName());
-    public MyListener(Game game, JavaPlugin plugin){
-        this.game = game;
+    public MyListener(Game pGame, JavaPlugin plugin){
+        game = pGame;
         this.plugin=plugin;
     }
     @EventHandler
@@ -149,7 +149,7 @@ public class MyListener implements Listener {
         }
 
 
-            if(game.teams[Integer.parseInt(event.getEntity().getInventory().getHelmet().getItemMeta().getDisplayName())]!=null){
+            if(event.getEntity().getInventory().getHelmet()!= null &&game.teams[Integer.parseInt(event.getEntity().getInventory().getHelmet().getItemMeta().getDisplayName())]!=null){
                 game.teams[Integer.parseInt(event.getEntity().getInventory().getHelmet().getItemMeta().getDisplayName())].setFlagCords(event.getEntity().getLocation());
             }
 
@@ -208,7 +208,7 @@ public class MyListener implements Listener {
                 game.board.getTeam(game.teams[i].getPrefix()).addEntry(player.getName());
             }
                 player.closeInventory();
-                CommandjoinTeam.openTeamInv(player,game);
+                CommandjoinTeam.openTeamInv(player, game);
             }
         if(event.getSlot() == 8){
             player.closeInventory();
@@ -280,6 +280,7 @@ public class MyListener implements Listener {
             return;
         }
         //System.out.println("Checking for flag");
+            if(event.getPlayer().getGameMode()==GameMode.SPECTATOR)return;
         for (Team team:
              game.teams) {
 
