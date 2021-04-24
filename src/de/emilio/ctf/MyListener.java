@@ -128,6 +128,7 @@ public class MyListener implements Listener {
     }
     @EventHandler
     public void onDeath(PlayerDeathEvent event){
+        if(!game.pvp)return;
 
         if(event.getEntity().getKiller() != null) {
             String killer = event.getEntity().getKiller().getName();
@@ -146,15 +147,24 @@ public class MyListener implements Listener {
                 }
             }
 
+        }   if(event.getEntity().getInventory().getHelmet()==null){
+            System.out.println("hier");
+            return;
         }
+            if(event.getEntity().getInventory().getHelmet().getType()!= Material.BANNER) {
+                System.out.println("bitte nicht");
+                return;
+            }
+            event.getEntity().setGameMode(GameMode.SPECTATOR);
 
+            if(game.teams[Integer.parseInt(event.getEntity().getInventory().getHelmet().getItemMeta().getDisplayName())]!=null){
 
-            if(event.getEntity().getInventory().getHelmet()!= null &&game.teams[Integer.parseInt(event.getEntity().getInventory().getHelmet().getItemMeta().getDisplayName())]!=null){
+                System.out.println("hiersdfsf");
                 game.teams[Integer.parseInt(event.getEntity().getInventory().getHelmet().getItemMeta().getDisplayName())].setFlagCords(event.getEntity().getLocation());
             }
 
-        int teamId = Integer.parseInt(event.getEntity().getInventory().getHelmet().getItemMeta().getDisplayName());
-        int x = game.teams[Integer.parseInt(event.getEntity().getInventory().getHelmet().getItemMeta().getDisplayName())].getColordata();
+            int teamId = Integer.parseInt(event.getEntity().getInventory().getHelmet().getItemMeta().getDisplayName());
+            int x = game.teams[teamId].getColordata();
             event.getEntity().getInventory().setHelmet(new ItemStack(Material.AIR));
 
             if(helmMap.get(event.getEntity().getName())!=null) {
@@ -288,7 +298,7 @@ public class MyListener implements Listener {
                 return;
             }
 
-            if(team.getFlagCords()!=null&&((int)event.getTo().getX())==((int)team.getFlagCords().getX())&&((int)event.getTo().getY())==((int)team.getFlagCords().getY())&&((int)event.getTo().getZ())==((int)team.getFlagCords().getZ())) {
+            if(event.getPlayer().getGameMode()!=GameMode.SPECTATOR&&team.getFlagCords()!=null&&((int)event.getTo().getX())==((int)team.getFlagCords().getX())&&((int)event.getTo().getY())==((int)team.getFlagCords().getY())&&((int)event.getTo().getZ())==((int)team.getFlagCords().getZ())) {
                 if (team.getId() != game.getTeam(event.getPlayer()).getId()) {
                     ItemStack flag = new ItemStack(Material.BANNER, 1, (short) (15-(team.getColordata())));
                     notifyPlayers("Team "+team.getName()+" Flag was taken");
