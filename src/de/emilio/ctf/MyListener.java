@@ -215,7 +215,7 @@ public class MyListener implements Listener {
                 game.addPlayer(player, i);
                 player.setGameMode(GameMode.SURVIVAL);
                // player.setPlayerListName(game.teams[i].getColor()+player.getName());
-                game.board.getTeam(game.teams[i].getPrefix()).addEntry(player.getName());
+
             }
                 player.closeInventory();
                 CommandjoinTeam.openTeamInv(player, game);
