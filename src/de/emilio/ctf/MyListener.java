@@ -191,6 +191,7 @@ public class MyListener implements Listener {
                     someLocation.setZ(someLocation.getZ()+1);
                     game.teams[teamId].setFlagCords(someLocation);
                     todesPunkt.getBlock().setType(Material.AIR);
+                    notifyPlayers("The Flag of team "+game.teams[teamId].getName()+" is back");
                 }
                 //The code inside will be executed in {timeInTicks} ticks.
             }
