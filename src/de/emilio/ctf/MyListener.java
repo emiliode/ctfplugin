@@ -207,11 +207,10 @@ public class MyListener implements Listener {
              game.teams) {
             System.out.println(team);
             if(team.getTeamRespawn()!=null){
-                Location loc = team.getTeamRespawn();
-                loc.setY(loc.getY()-1);
-                loc.setZ(loc.getZ()-1);
-                System.out.println(loc.getBlock()+"\n"+ev.getBlock());
-                if(ev.getBlock().getLocation()==loc||ev.getBlock().getLocation()==team.getTeamRespawn()){
+                Location loc = new Location(Bukkit.getWorlds().get(0),team.getTeamRespawn().getX(),team.getTeamRespawn().getY()-1,team.getTeamRespawn().getZ()-1);
+                Location loc2 = new Location(Bukkit.getWorlds().get(0),team.getTeamRespawn().getX(),team.getTeamRespawn().getY(),team.getTeamRespawn().getZ()-1);
+               // System.out.println(loc.getBlock()+"\n"+ev.getBlock());
+                if(ev.getBlock().getLocation().equals(loc) ||ev.getBlock().getLocation().equals(team.getTeamRespawn())||loc2.equals(ev.getBlock().getLocation())){
                     ev.getPlayer().sendMessage(ChatColor.DARK_RED+"Cannot break this Block");
                     ev.setCancelled(true);
                 }
