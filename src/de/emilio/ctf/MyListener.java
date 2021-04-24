@@ -192,6 +192,7 @@ public class MyListener implements Listener {
                     someLocation.setZ(someLocation.getZ()+1);
                     game.teams[teamId].setFlagCords(someLocation);
                     todesPunkt.getBlock().setType(Material.AIR);
+                    notifyPlayers("The Flag of team "+game.teams[teamId].getName()+" is back");
                 }
                 //The code inside will be executed in {timeInTicks} ticks.
             }
@@ -233,7 +234,7 @@ public class MyListener implements Listener {
                 game.addPlayer(player, i);
                 player.setGameMode(GameMode.SURVIVAL);
                // player.setPlayerListName(game.teams[i].getColor()+player.getName());
-                game.board.getTeam(game.teams[i].getPrefix()).addEntry(player.getName());
+
             }
                 player.closeInventory();
                 CommandjoinTeam.openTeamInv(player, game);

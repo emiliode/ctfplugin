@@ -77,6 +77,7 @@ public class Game {
                 team.removePlayer(player);
             }if(teamid == team.getId()){
                 team.addPlayer(player);
+                board.getTeam(teams[teamid].getPrefix()).addEntry(player.getName());
                 player.sendMessage("You are now in team: "+team.getColor()+team.getName() );
             }
 
