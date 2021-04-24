@@ -11,6 +11,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -198,7 +199,24 @@ public class MyListener implements Listener {
 
 
     }
-
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent ev){
+        if(game.teams==null)return;
+        for (Team team:
+             game.teams) {
+            System.out.println(team);
+            if(team.getTeamRespawn()!=null){
+                Location loc = team.getTeamRespawn();
+                loc.setY(loc.getY()-1);
+                loc.setZ(loc.getZ()-1);
+                System.out.println(loc.getBlock()+"\n"+ev.getBlock());
+                if(ev.getBlock().getLocation()==loc||ev.getBlock().getLocation()==team.getTeamRespawn()){
+                    ev.getPlayer().sendMessage(ChatColor.DARK_RED+"Cannot break this Block");
+                    ev.setCancelled(true);
+                }
+            }
+        }
+    }
 
     @EventHandler
     public void onClick(InventoryClickEvent event){
