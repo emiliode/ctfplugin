@@ -25,7 +25,7 @@ public class Game {
     public Team[] teams;
     public HashMap<String, Long> Timeoutmap = new HashMap<String, Long>();
     public HashMap<String, BossBar> Barmap = new HashMap<String,BossBar>();
-
+    public HashMap<String, Boolean> SentMap= new HashMap<>();
 
     public int pointstowin;
     public boolean pvp;

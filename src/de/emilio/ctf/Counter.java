@@ -35,6 +35,7 @@ public class Counter extends BukkitRunnable {
                     BossBarAPI.removeAllBars(online);
                     game.Barmap.remove(online.getName());
                     game.Timeoutmap.remove(online.getName());
+                    game.SentMap.remove(online.getName());
                     //System.out.println(game.getTeam(online).getTeamRespawn());
                     if(game.getTeam(online)!= null ) {
                         if(game.getTeam(online).getTeamRespawn()!= null) {
